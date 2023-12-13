@@ -98,6 +98,21 @@ CREATE TABLE MetodoDePago(
 	Foreign key (NumPedido) references Pedido(NumPedido)
 	);
 
+CREATE TABLE TarjetaDebito(
+	IDmetodoPago VARCHAR(50),
+	numTarjeta int not null,
+	apodo VARCHAR(250) not null,
+	FechaExpi DATE not null,
+	Foreign key (IDmetodoPago) references MetodoDePago(IDmetodoPago),
+	);
+
+CREATE TABLE TarjetaCredito(
+	IDmetodoPago VARCHAR(50),
+	numTarjeta int not null,
+	apodo VARCHAR(250) not null,
+	FechaExpi DATE not null,
+	Foreign key (IDmetodoPago) references MetodoDePago(IDmetodoPago),
+	);
 
 CREATE TABLE Vehiculo(
 	idvehiculo VARCHAR(50) PRIMARY KEY,
