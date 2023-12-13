@@ -106,6 +106,25 @@ CREATE TABLE Vehiculo(
 	Foreign key (cedula) references repartidor(cedula)
 	);
 
+CREATE TABLE carro(
+	idvehiculo VARCHAR(50),
+	numMatricula VARCHAR(50) not null,
+	modelo VARCHAR(50) not null,
+	Foreign key (idvehiculo) references Vehiculo(idvehiculo)
+	);
+
+CREATE TABLE motocicleta(
+	idvehiculo VARCHAR(50),
+	numMatricula VARCHAR(50) not null,
+	modelo VARCHAR(50) not null,
+	Foreign key (idvehiculo) references Vehiculo(idvehiculo)
+	);
+CREATE TABLE bicicleta(
+	idvehiculo VARCHAR(50),
+	modelo VARCHAR(50) not null,
+	Foreign key (idvehiculo) references Vehiculo(idvehiculo)
+	);
+
 CREATE TABLE Repartidor(
 	Cedula INT PRIMARY KEY,
 	Nombre varchar(50) not null,
