@@ -1,19 +1,26 @@
 create database if not exists pedidosya;
 use pedidosya;
 
+create database if not exists pedidosya;
+use pedidosya;
+
 create table establecimiento(
 	idestablecimiento varchar(50) primary key not null,
-	ubicacion varchar(50)not null,
-	calificacion float(10)null,
-	distancia float(10)not null
+	ubicacion varchar(50),
+	calificacion float(10),
+	distancia float(10)
+	tipo Establecimiento
 	);
     
 create table producto(
 	idproducto varchar(50) primary key not null,
-    precio float(10) not null,
-    descripcion varchar(30) not null,
-    descuento float(10) null
-    
+	nombre varchar(30) not null, 
+	foto Blob,
+	precio float(10) not null,
+	descripcion varchar(30) not null,
+	descuento float(10) null,
+	idEstablecimiento varchar(30),
+	Foreign Key (idEstablecimiento) references Establecimiento(idEstablecimiento)
 );
 
 create table repartidor(
