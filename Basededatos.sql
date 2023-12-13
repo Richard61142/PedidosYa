@@ -70,3 +70,12 @@ estadoDelPedido VARCHAR(30),
 costoCancelacion FLOAT(10)
 );
 
+CREATE TABLE Calificacion(
+idpedido VARCHAR(50),
+calificacionEstablecimiento VARCHAR(250),
+calificacionRepartidor VARCHAR(250),
+calificacionProducto VARCHAR(250),
+numpedido VARCHAR(50),
+PRIMARY KEY(idpedido,numpedido)
+);
+
