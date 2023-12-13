@@ -1,9 +1,6 @@
 create database if not exists pedidosya;
 use pedidosya;
 
-create database if not exists pedidosya;
-use pedidosya;
-
 create table establecimiento(
 	idestablecimiento varchar(50) primary key not null,
 	ubicacion varchar(50),
