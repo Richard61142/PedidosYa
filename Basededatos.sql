@@ -1,13 +1,6 @@
 create database if not exists pedidosya;
 use pedidosya;
 
-create table establecimiento(
-	idestablecimiento varchar(50) primary key not null,
-	ubicacion varchar(50),
-	calificacion float(10),
-	distancia float(10)
-	tipo Establecimiento
-	);
     
 create table producto(
 	idproducto varchar(50) primary key not null,
