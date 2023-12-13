@@ -63,3 +63,10 @@ telefono INT,
 PRIMARY KEY (idEstablecimiento,numpedido)
 );
 
+CREATE TABLE cancelacion(
+numpedido VARCHAR(50) PRIMARY KEY,
+motivo VARCHAR(30),
+estadoDelPedido VARCHAR(30),
+costoCancelacion FLOAT(10)
+);
+
