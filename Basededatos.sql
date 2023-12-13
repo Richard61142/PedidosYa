@@ -90,3 +90,10 @@ idproducto VARCHAR(30),
 establecimiento VARCHAR(50)
 );
 
+CREATE TABLE Metodo de Pago(
+IDmetodoPago VARCHAR(50) PRIMARY KEY,
+idcliente VARCHAR(50) not null,
+NumPedido VARCHAR(50) not null,
+Foreign key (idcliente) references PerfilCiente(idcliente),
+Foreign key (NumPedido) references Pedido(NumPedido)
+);
