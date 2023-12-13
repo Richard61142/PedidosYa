@@ -103,7 +103,7 @@ CREATE TABLE TarjetaDebito(
 	numTarjeta int not null,
 	apodo VARCHAR(250) not null,
 	FechaExpi DATE not null,
-	Foreign key (IDmetodoPago) references MetodoDePago(IDmetodoPago),
+	Foreign key (IDmetodoPago) references MetodoDePago(IDmetodoPago)
 	);
 
 CREATE TABLE TarjetaCredito(
@@ -111,7 +111,7 @@ CREATE TABLE TarjetaCredito(
 	numTarjeta int not null,
 	apodo VARCHAR(250) not null,
 	FechaExpi DATE not null,
-	Foreign key (IDmetodoPago) references MetodoDePago(IDmetodoPago),
+	Foreign key (IDmetodoPago) references MetodoDePago(IDmetodoPago)
 	);
 
 CREATE TABLE Vehiculo(
