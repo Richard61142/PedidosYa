@@ -25,10 +25,13 @@ create table producto(
 
 create table repartidor(
 	cedula int primary key not null,
-    nombre varchar(50) not null,
-    calificacion varchar(50) null,
-    fechanacimiento date not null,
-    email varchar(50)
+	nombre varchar(50) not null,
+	telefono int,
+	calificacion varchar(50) null,
+	fechanacimiento date not null,
+	email varchar(50),
+	numpedido varchar(50),
+	foreign key (numpedido) references Calificacion(numpedido)
     
 );
 
