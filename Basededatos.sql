@@ -105,3 +105,13 @@ color VARCHAR(50) not null,
 cedula VARCHAR(50) not null,
 Foreign key (cedula) references repartidor(cedula)
 );
+
+CREATE TABLE Repartidor(
+Cedula INT PRIMARY KEY,
+Nombre varchar(50) not null,
+Telefono INT not null,
+Calificacion varchar(250) not null,
+FechaNacimiento date,
+Email varchar(250) not null,
+numpedido varchar(50)
+);
