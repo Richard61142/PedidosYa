@@ -3,9 +3,9 @@ use pedidosya;
 
 create table establecimiento(
 	idestablecimiento varchar(50) primary key not null,
-	ubicacion varchar(50),
-	calificacion float(10),
-	distancia float(10)
+	ubicacion varchar(50)not null,
+	calificacion float(10)null,
+	distancia float(10)not null
 	);
     
 create table producto(
@@ -20,17 +20,17 @@ create table repartidor(
 	cedula int primary key not null,
     nombre varchar(50) not null,
     calificacion varchar(50) null,
-    fechanacimiento date,
+    fechanacimiento date not null,
     email varchar(50)
     
 );
 
 CREATE TABLE Cliente(
 Telefono INT PRIMARY KEY,
-email VARCHAR(50),
-fecha_nacimiento date,
-cedula INT,
-direccion VARCHAR(50),
+email VARCHAR(50)not null,
+fecha_nacimiento date not null,
+cedula INT not null,
+direccion VARCHAR(50)not null,
 edad INT,
 numpedido VARCHAR(50) UNIQUE
 );
@@ -48,18 +48,18 @@ FOREIGN KEY (Telefono) REFERENCES Cliente(Telefono)
 
 CREATE TABLE ServicioTecnico(
 id_empleado VARCHAR(50) PRIMARY KEY,
-nombre VARCHAR(250),
-correo VARCHAR(250),
-telefono INT
+nombre VARCHAR(250)not null,
+correo VARCHAR(250)not null,
+telefono INT not null
 );
 
 CREATE TABLE Establecimiento(
 idEstablecimiento VARCHAR(50),
 numpedido VARCHAR(50),
-ubicacion VARCHAR(250),
-calificacion FLOAT(10),
-distancia FLOAT(10),
-telefono INT,
+ubicacion VARCHAR(250)not null,
+calificacion FLOAT(10)null,
+distancia FLOAT(10)not null,
+telefono INT not null,
 PRIMARY KEY (idEstablecimiento,numpedido)
 );
 
