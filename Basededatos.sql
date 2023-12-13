@@ -79,3 +79,14 @@ numpedido VARCHAR(50),
 PRIMARY KEY(idpedido,numpedido)
 );
 
+CREATE TABLE Pedido(
+numpedido VARCHAR(50) PRIMARY KEY,
+estado VARCHAR(30),
+ubicacion VARCHAR(50),
+precio FLOAT(10),
+telefono INT,
+cedula INT,
+idproducto VARCHAR(30),
+establecimiento VARCHAR(50)
+);
+
