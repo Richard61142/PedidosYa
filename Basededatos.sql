@@ -100,7 +100,7 @@ idproducto VARCHAR(30),
 establecimiento VARCHAR(50)
 );
 
-CREATE TABLE Metodo de Pago(
+CREATE TABLE MetodoDePago(
 IDmetodoPago VARCHAR(50) PRIMARY KEY,
 idcliente VARCHAR(50) not null,
 NumPedido VARCHAR(50) not null,
