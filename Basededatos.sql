@@ -97,3 +97,11 @@ NumPedido VARCHAR(50) not null,
 Foreign key (idcliente) references PerfilCiente(idcliente),
 Foreign key (NumPedido) references Pedido(NumPedido)
 );
+
+
+CREATE TABLE Vehiculo(
+idvehiculo VARCHAR(50) PRIMARY KEY,
+color VARCHAR(50) not null,
+cedula VARCHAR(50) not null,
+Foreign key (cedula) references repartidor(cedula)
+);
