@@ -1,4 +1,4 @@
-CREATE DATABASE IF NOT EXISTS pedidosya;
+CREATE DATABASE  pedidosya;
 USE pedidosya;
 
 
