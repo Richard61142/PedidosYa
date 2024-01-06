@@ -23,7 +23,7 @@ CREATE TABLE Establecimiento(
 );
 
 CREATE TABLE ServicioTecnico(
-    id_empleado VARCHAR(50) PRIMARY KEY,
+    id_empleado VARCHAR(50) PRIMARY KEY NOT NULL,
     nombre VARCHAR(250) NOT NULL,
     correo VARCHAR(250) NOT NULL,
     telefono INT NOT NULL
@@ -57,19 +57,19 @@ CREATE TABLE Producto(
 );
 
 CREATE TABLE PerfilCliente(
-    idCliente VARCHAR(50) PRIMARY KEY,
+    idCliente VARCHAR(50) PRIMARY KEY NOT NULL,
     HistorialPedido VARCHAR(20),
     favoritos VARCHAR(250),
     direcciones VARCHAR(50),
     cupones VARCHAR(250),
     MetodoDePago VARCHAR(250),
-    Telefono INT,
+    Telefono INT NOT NULL,
     FOREIGN KEY (Telefono) REFERENCES Cliente(Telefono)
 );
 
 
 CREATE TABLE Cancelacion(
-    numpedido VARCHAR(50) PRIMARY KEY,
+    numpedido VARCHAR(50) PRIMARY KEY NOT NULL,
     motivo VARCHAR(30),
     estadoDelPedido VARCHAR(30),
     costoCancelacion FLOAT NOT NULL
@@ -89,40 +89,40 @@ CREATE TABLE Repartidor(
 
 
 CREATE TABLE Vehiculo(
-    idvehiculo VARCHAR(50) PRIMARY KEY,
+    idvehiculo VARCHAR(50) PRIMARY KEY NOT NULL,
     color VARCHAR(50) NOT NULL,
     cedula INT NOT NULL,
 	FOREIGN KEY(cedula) REFERENCES Repartidor(cedula)
 );
 
 CREATE TABLE Carro(
-    idvehiculo VARCHAR(50),
+    idvehiculo VARCHAR(50) NOT NULL,
     numMatricula VARCHAR(50) NOT NULL,
     modelo VARCHAR(50) NOT NULL,
     FOREIGN KEY (idvehiculo) REFERENCES Vehiculo(idvehiculo)
 );
 
 CREATE TABLE Motocicleta(
-    idvehiculo VARCHAR(50),
+    idvehiculo VARCHAR(50) NOT NULL,
     numMatricula VARCHAR(50) NOT NULL,
     modelo VARCHAR(50) NOT NULL,
     FOREIGN KEY (idvehiculo) REFERENCES Vehiculo(idvehiculo)
 );
 
 CREATE TABLE Bicicleta(
-    idvehiculo VARCHAR(50),
+    idvehiculo VARCHAR(50) NOT NULL,
     modelo VARCHAR(50) NOT NULL,
     FOREIGN KEY (idvehiculo) REFERENCES Vehiculo(idvehiculo)
 );
 CREATE TABLE Pedido(
-	numpedido VARCHAR(50),
-	estado VARCHAR(30),
-	ubicacion VARCHAR(50),
-	precio FLOAT(10),
-	telefono INT,
+	numpedido VARCHAR(50) NOT NULL,
+	estado VARCHAR(30) NOT NULL,
+	ubicacion VARCHAR(50) NOT NULL,
+	precio FLOAT(10) NOT NULL,
+	telefono INT ,
 	cedula INT,
-	idproducto VARCHAR(30),
-	establecimiento VARCHAR(50),
+	idproducto VARCHAR(30) NOT NULL,
+	establecimiento VARCHAR(50) NOT NULL,
     PRIMARY KEY(numpedido),
     foreign key(establecimiento) references Establecimiento(idEstablecimiento),
     foreign key(telefono) references Cliente(telefono),
@@ -132,7 +132,7 @@ CREATE TABLE Pedido(
 	);
 
 CREATE TABLE MetodoDePago(
-    IDmetodoPago VARCHAR(50) PRIMARY KEY,
+    IDmetodoPago VARCHAR(50) PRIMARY KEY NOT NULL,
     idcliente VARCHAR(50) NOT NULL,
     NumPedido VARCHAR(50) NOT NULL,
     FOREIGN KEY (idcliente) REFERENCES PerfilCliente(idCliente),
@@ -140,16 +140,16 @@ CREATE TABLE MetodoDePago(
 );
 
 CREATE TABLE TarjetaDebito(
-    IDmetodoPago VARCHAR(50),
-    numTarjeta INT NOT NULL,
+    IDmetodoPago VARCHAR(50) NOT NULL,
+    numTarjeta VARCHAR(16) NOT NULL,
     apodo VARCHAR(250) NOT NULL,
     FechaExpi DATE NOT NULL,
     FOREIGN KEY (IDmetodoPago) REFERENCES MetodoDePago(IDmetodoPago)
 );
 
 CREATE TABLE TarjetaCredito(
-    IDmetodoPago VARCHAR(50),
-    numTarjeta INT NOT NULL,
+    IDmetodoPago VARCHAR(50) NOT NULL,
+    numTarjeta VARCHAR(16) NOT NULL,
     apodo VARCHAR(250) NOT NULL,
     FechaExpi DATE NOT NULL,
     FOREIGN KEY (IDmetodoPago) REFERENCES MetodoDePago(IDmetodoPago)
