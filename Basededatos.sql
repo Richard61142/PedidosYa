@@ -1,15 +1,16 @@
 CREATE DATABASE  pedidosya;
 USE pedidosya;
 
-
 CREATE TABLE CALIFICACION(
-idpedido VARCHAR(50) NOT NULL,
-calificacionEstablecimiento VARCHAR(250),
-calificacionRepartidor VARCHAR(250),
-calificacionProducto VARCHAR(250),
-numpedido VARCHAR(50) NOT NULL,
-PRIMARY KEY(idpedido,numpedido)
+	idpedido VARCHAR(50) NOT NULL,
+	calificacionEstablecimiento VARCHAR(250),
+	calificacionRepartidor VARCHAR(250),
+	calificacionProducto VARCHAR(250),
+	numpedido VARCHAR(50) NOT NULL,
+	PRIMARY KEY(idpedido,numpedido),
+    	INDEX idx_numpedido (numpedido)
 );
+
 
 CREATE TABLE Establecimiento(
     idEstablecimiento VARCHAR(50) NOT NULL,
@@ -19,7 +20,8 @@ CREATE TABLE Establecimiento(
     distancia FLOAT NOT NULL,
     telefono INT NOT NULL,
     tipoEstablecimiento VARCHAR(50) NOT NULL,
-    PRIMARY KEY (idEstablecimiento, numpedido)
+    PRIMARY KEY (idEstablecimiento, numpedido),
+    foreign key (numpedido) references CALIFICACION(numpedido)
 );
 
 CREATE TABLE ServicioTecnico(
@@ -36,13 +38,12 @@ CREATE TABLE Cliente(
     cedula INT NOT NULL,
     direccion VARCHAR(50) NOT NULL,
     edad INT,
-    numpedido VARCHAR(50),
+    numpedido VARCHAR(50) NOT NULL,
     id_empleado VARCHAR(50),
-    PRIMARY KEY (Telefono, numpedido),
-    foreign key (id_empleado) references ServicioTecnico(id_empleado)
-
+    PRIMARY KEY (Telefono),
+    foreign key (id_empleado) references ServicioTecnico(id_empleado),
+	foreign key (numpedido) references CALIFICACION(numpedido)
 );
-
 
 
 CREATE TABLE Producto(
@@ -78,13 +79,15 @@ CREATE TABLE Cancelacion(
 
 
 CREATE TABLE Repartidor(
-    cedula INT PRIMARY KEY NOT NULL,
+    cedula INT NOT NULL,
     nombre VARCHAR(50) NOT NULL,
     telefono INT,
     calificacion VARCHAR(50) NULL,
     fechanacimiento DATE NOT NULL,
     email VARCHAR(50),
-    numpedido VARCHAR(50)
+    numpedido VARCHAR(50),
+    primary key(cedula,numpedido),
+    foreign key (numpedido) references CALIFICACION(numpedido)
 );
 
 
@@ -154,5 +157,7 @@ CREATE TABLE TarjetaCredito(
     FechaExpi DATE NOT NULL,
     FOREIGN KEY (IDmetodoPago) REFERENCES MetodoDePago(IDmetodoPago)
 );
+
+
 
 
