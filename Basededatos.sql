@@ -35,7 +35,7 @@ CREATE TABLE Cliente(
     Telefono INT NOT NULL,
     email VARCHAR(50) NOT NULL,
     fecha_nacimiento DATE NOT NULL,
-    cedula INT NOT NULL,
+    cedula BIGINT NOT NULL,
     direccion VARCHAR(50) NOT NULL,
     edad INT,
     numpedido VARCHAR(50) NOT NULL,
@@ -79,7 +79,7 @@ CREATE TABLE Cancelacion(
 
 
 CREATE TABLE Repartidor(
-    cedula INT NOT NULL,
+    cedula BIGINT NOT NULL,
     nombre VARCHAR(50) NOT NULL,
     telefono INT,
     calificacion VARCHAR(50) NULL,
@@ -94,7 +94,7 @@ CREATE TABLE Repartidor(
 CREATE TABLE Vehiculo(
     idvehiculo VARCHAR(50) PRIMARY KEY NOT NULL,
     color VARCHAR(50) NOT NULL,
-    cedula INT NOT NULL,
+    cedula BIGINT NOT NULL,
 	FOREIGN KEY(cedula) REFERENCES Repartidor(cedula)
 );
 
@@ -123,7 +123,7 @@ CREATE TABLE Pedido(
 	ubicacion VARCHAR(50) NOT NULL,
 	precio FLOAT(10) NOT NULL,
 	telefono INT ,
-	cedula INT,
+	cedula BIGINT NOT NULL,
 	idproducto VARCHAR(30) NOT NULL,
 	establecimiento VARCHAR(50) NOT NULL,
     PRIMARY KEY(numpedido),
