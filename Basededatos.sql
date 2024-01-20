@@ -8,7 +8,7 @@ CREATE TABLE CALIFICACION(
 	calificacionProducto VARCHAR(250),
 	numpedido VARCHAR(50) NOT NULL,
 	PRIMARY KEY(idpedido,numpedido),
-    	INDEX idx_numpedido (numpedido)
+	INDEX idx_numpedido (numpedido)
 );
 
 
@@ -85,7 +85,7 @@ CREATE TABLE Repartidor(
     calificacion VARCHAR(50) NULL,
     fechanacimiento DATE NOT NULL,
     email VARCHAR(50),
-    numpedido VARCHAR(50),
+    numpedido VARCHAR(50) NOT NULL,
     primary key(cedula,numpedido),
     foreign key (numpedido) references CALIFICACION(numpedido)
 );
@@ -157,7 +157,3 @@ CREATE TABLE TarjetaCredito(
     FechaExpi DATE NOT NULL,
     FOREIGN KEY (IDmetodoPago) REFERENCES MetodoDePago(IDmetodoPago)
 );
-
-
-
-
