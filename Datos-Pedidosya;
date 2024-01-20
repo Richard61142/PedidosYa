@@ -1,1 +1,110 @@
+INSERT INTO ServicioTecnico (id_empleado, nombre, correo, telefono)
+VALUES ('ST002', 'Técnico2', 'tecnico2@example.com', 555555555),
+       ('ST003', 'Técnico3', 'tecnico3@example.com', 777777777),
+       ('ST004', 'Técnico4', 'tecnico4@example.com', 888888888),
+       ('ST005', 'Técnico5', 'tecnico5@example.com', 999999999),
+       ('ST006', 'Técnico6', 'tecnico6@example.com', 111111111);
+INSERT INTO Cancelacion (numpedido, motivo, estadoDelPedido, costoCancelacion)
+VALUES ('1002', 'Fuera de servicio', 'Cancelado', 4.99),
+       ('1003', 'Error en el pedido', 'Cancelado', 3.99),
+       ('1004', 'Cambio de plan', 'Cancelado', 2.99),
+       ('1005', 'No entregado a tiempo', 'Cancelado', 6.99),
+       ('1006', 'Producto incorrecto', 'Cancelado', 1.99);
+
+INSERT INTO CALIFICACION (idpedido, calificacionEstablecimiento, calificacionRepartidor, calificacionProducto, numpedido)
+VALUES
+  ('2', 'Muy Buena', 'Bueno', 'Excelente', '1002'),
+  ('3', 'Regular', 'Regular', 'Muy Bueno', '1003'),
+  ('4', 'Buena', 'Excelente', 'Excelente', '1004'),
+  ('5', 'Muy Buena', 'Muy Bueno', 'Bueno', '1005'),
+  ('6', 'Excelente', 'Bueno', 'Regular', '1006');
+
+
+INSERT INTO Establecimiento (idEstablecimiento, numpedido, ubicacion, calificacion, distancia, telefono, tipoEstablecimiento)
+VALUES ('E002', '1002', 'Dirección2', 4.2, 3.0, 987654321, 'Cafetería'),
+       ('E003', '1003', 'Dirección3', 3.8, 1.5, 555555555, 'Tienda de Ropa'),
+       ('E004', '1004', 'Dirección4', 4.6, 2.8, 333333333, 'Farmacia'),
+       ('E005', '1005', 'Dirección5', 3.9, 1.9, 666666666, 'Panadería'),
+       ('E006', '1006', 'Dirección6', 4.8, 2.0, 444444444, 'Pizzería');
+       
+
+
+INSERT INTO Repartidor (cedula, nombre, telefono, calificacion, fechanacimiento, email, numpedido)
+VALUES
+  (9876543210, 'Repartidor2', 555555555, '4.5', '1993-08-20', 'repartidor2@example.com', '1002'),
+  (5555555555, 'Repartidor3', 333333333, '4.2', '1987-12-05', 'repartidor3@example.com', '1003'),
+  (3333333333, 'Repartidor4', 666666666, '4.8', '1991-04-15', 'repartidor4@example.com', '1004'),
+  (6666666666, 'Repartidor5', 444444444, '4.0', '1996-06-25', 'repartidor5@example.com', '1005'),
+  (4444444444, 'Repartidor6', 222222222, '4.7', '1990-02-10', 'repartidor6@example.com', '1006');
+
+INSERT INTO Cliente (Telefono, email, fecha_nacimiento, cedula, direccion, edad, numpedido, id_empleado)
+VALUES (987654321, 'cliente2@example.com', '1995-03-15', 9876543210, 'DirecciónCliente2', 27, '1002', 'ST002'),
+       (555555555, 'cliente3@example.com', '1988-07-22', 5555555555, 'DirecciónCliente3', 33, '1003', 'ST003'),
+       (333333333, 'cliente4@example.com', '1992-11-10', 3333333333, 'DirecciónCliente4', 29, '1004', 'ST004'),
+       (666666666, 'cliente5@example.com', '1998-05-18', 6666666666, 'DirecciónCliente5', 24, '1005', 'ST005'),
+       (444444444, 'cliente6@example.com', '1994-09-03', 4444444444, 'DirecciónCliente6', 26, '1006', 'ST006');
+INSERT INTO Producto (idproducto, nombre, foto, precio, descripcion, descuento, idEstablecimiento)
+VALUES ('P002', 'Producto2', NULL, 12.99, 'Descripción del producto 2', 1.5, 'E002'),
+       ('P003', 'Producto3', NULL, 19.99, 'Descripción del producto 3', 3.0, 'E003'),
+       ('P004', 'Producto4', NULL, 8.99, 'Descripción del producto 4', 0.5, 'E004'),
+       ('P005', 'Producto5', NULL, 24.99, 'Descripción del producto 5', 2.0, 'E005'),
+       ('P006', 'Producto6', NULL, 14.99, 'Descripción del producto 6', 1.0, 'E006');
+INSERT INTO PerfilCliente (idCliente, HistorialPedido, favoritos, direcciones, cupones, MetodoDePago, Telefono)
+VALUES ('C002', '1002,1003', 'P003,P004', 'Dirección2,Dirección3', 'Cupón3,Cupón4', 'Efectivo', 987654321),
+       ('C003', '1004,1005', 'P005,P006', 'Dirección4,Dirección5', 'Cupón5,Cupón6', 'TarjetaCrédito', 555555555),
+       ('C004', '1006,1002', 'P002,P004', 'Dirección6,Dirección2', 'Cupón2,Cupón4', 'Efectivo', 333333333),
+       ('C005', '1003,1005', 'P003,P005', 'Dirección3,Dirección5', 'Cupón3,Cupón5', 'TarjetaDébito', 666666666),
+       ('C006', '1004,1006', 'P004,P006', 'Dirección4,Dirección6', 'Cupón4,Cupón6', 'Efectivo', 444444444);
+INSERT INTO Pedido (numpedido, estado, ubicacion, precio, telefono, cedula, idproducto, establecimiento)
+VALUES ('1002', 'Entregado', 'Ubicacion2', 18.99, 987654321, 9876543210, 'P002', 'E002'),
+       ('1003', 'En camino', 'Ubicacion3', 26.99, 555555555, 5555555555, 'P003', 'E003'),
+       ('1004', 'Entregado', 'Ubicacion4', 15.99, 333333333, 3333333333, 'P004', 'E004'),
+       ('1005', 'Pendiente', 'Ubicacion5', 29.99, 666666666, 6666666666, 'P005', 'E005'),
+       ('1006', 'Entregado', 'Ubicacion6', 21.99, 444444444, 4444444444, 'P006', 'E006');
+
+INSERT INTO Vehiculo (idvehiculo, color, cedula)
+VALUES ('V002', 'Azul', 5555555555),
+       ('V003', 'Verde', 3333333333),
+       ('V004', 'Negro', 6666666666),
+       ('V005', 'Blanco', 4444444444),
+       ('V006', 'Gris', 9876543210);
+
+INSERT INTO Carro (idvehiculo, numMatricula, modelo)
+VALUES ('V002', 'XYZ456', 'SUV'),
+       ('V003', 'LMN789', 'Camioneta'),
+       ('V004', 'OPQ123', 'Compacto'),
+       ('V005', 'RST456', 'Familiar'),
+       ('V006', 'UVW789', 'Deportivo');
+INSERT INTO Motocicleta (idvehiculo, numMatricula, modelo)
+VALUES ('V002', 'ABC987', 'Chopper'),
+       ('V003', 'XYZ654', 'Cruiser'),
+       ('V004', 'LMN321', 'Deportiva'),
+       ('V005', 'OPQ654', 'Touring'),
+       ('V006', 'RST321', 'Scooter');
+INSERT INTO Bicicleta (idvehiculo, modelo)
+VALUES ('V002', 'Carretera'),
+       ('V003', 'Plegable'),
+       ('V004', 'Eléctrica'),
+       ('V005', 'Montaña'),
+       ('V006', 'Urbana');
+
+
+INSERT INTO MetodoDePago (IDmetodoPago, idcliente, NumPedido)
+VALUES ('M002', 'C002', '1002'),
+       ('M003', 'C003', '1003'),
+       ('M004', 'C004', '1004'),
+       ('M005', 'C005', '1005'),
+       ('M006', 'C006', '1006');
+INSERT INTO TarjetaDebito (IDmetodoPago, numTarjeta, apodo, FechaExpi)
+VALUES ('M002', 1111222233334444, 'Tarjeta Débito Cliente2', '2025-11-30'),
+       ('M003', 2222333344445555, 'Tarjeta Débito Cliente3', '2024-10-31'),
+       ('M004', 3333444455556666, 'Tarjeta Débito Cliente4', '2023-09-30'),
+       ('M005', 4444555566667777, 'Tarjeta Débito Cliente5', '2022-08-31'),
+       ('M006', 5555666677778888, 'Tarjeta Débito Cliente6', '2021-07-31');
+INSERT INTO TarjetaCredito (IDmetodoPago, numTarjeta, apodo, FechaExpi)
+VALUES ('M002', 9876543210123456, 'Tarjeta Crédito Cliente2', '2025-12-31'),
+       ('M003', 8765432109876543, 'Tarjeta Crédito Cliente3', '2024-12-31'),
+       ('M004', 7654321098765432, 'Tarjeta Crédito Cliente4', '2023-12-31'),
+       ('M005', 6543210987654321, 'Tarjeta Crédito Cliente5', '2022-12-31'),
+       ('M006', 5432109876543210, 'Tarjeta Crédito Cliente6', '2021-12-31');
 
