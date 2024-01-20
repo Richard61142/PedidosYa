@@ -40,3 +40,7 @@ SELECT * FROM PedidosPendientes;
 SELECT * FROM PedidosCancelados;
 
 
+-- ===========================TRIGGERS============================
+
+
+
