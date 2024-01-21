@@ -44,3 +44,679 @@ SELECT * FROM PedidosCancelados;
 
 
 
+
+
+
+
+
+
+
+
+-- =========================PROCEDURE===============================
+-- =================================================================
+-- ======================TABLA CALIFICACION=========================
+-- =================================================================
+-- Agregar calificacion
+DELIMITER //
+CREATE PROCEDURE Agregar_calificacion(
+    IN p_idpedido INT,
+    IN p_calificacionEstablecimiento INT,
+    IN p_calificacionRepartidor INT,
+    IN p_calificacionProducto INT,
+    IN p_numpedido INT
+)
+BEGIN
+    DECLARE existe_registro INT;
+
+
+    SELECT COUNT(*) INTO existe_registro FROM CALIFICACION WHERE idpedido = p_idpedido AND numpedido = p_numpedido;
+    IF existe_registro > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Entrada duplicada para el ID y número de pedido especificados';
+    ELSE
+        -- Insertar datos
+        INSERT INTO CALIFICACION VALUES (p_idpedido, p_calificacionEstablecimiento, p_calificacionRepartidor, p_calificacionProducto, p_numpedido);
+        COMMIT;
+    END IF;
+END //
+DELIMITER ;
+-- Consultar calificacion
+DELIMITER //
+CREATE PROCEDURE Consultar_calificacion(
+    IN p_idpedido INT,
+    IN p_numpedido INT
+)
+BEGIN
+    DECLARE existe_registro INT;
+
+    SELECT COUNT(*) INTO existe_registro FROM CALIFICACION WHERE idpedido = p_idpedido AND numpedido = p_numpedido;
+    IF existe_registro = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'No se encontró la entrada para el ID y número de pedido especificados';
+    ELSE
+        SELECT * FROM CALIFICACION WHERE idpedido = p_idpedido AND numpedido = p_numpedido;
+    END IF;
+END //
+DELIMITER ;
+
+-- Actualizar calificacion
+DELIMITER //
+CREATE PROCEDURE Actualizar_calificacion(
+    IN p_idpedido INT,
+    IN p_numpedido INT,
+    IN p_nueva_calificacionEstablecimiento INT,
+    IN p_nueva_calificacionRepartidor INT,
+    IN p_nueva_calificacionProducto INT
+)
+BEGIN
+    DECLARE existe_registro INT;
+
+    SELECT COUNT(*) INTO existe_registro FROM CALIFICACION WHERE idpedido = p_idpedido AND numpedido = p_numpedido;
+    IF existe_registro = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'No se encontró la entrada para el ID y número de pedido especificados';
+    ELSE
+        
+        UPDATE CALIFICACION
+        SET calificacionEstablecimiento = p_nueva_calificacionEstablecimiento,
+            calificacionRepartidor = p_nueva_calificacionRepartidor,
+            calificacionProducto = p_nueva_calificacionProducto
+        WHERE idpedido = p_idpedido AND numpedido = p_numpedido;
+        COMMIT;
+    END IF;
+END //
+DELIMITER ;
+
+-- Eliminar calificacion
+DELIMITER //
+CREATE PROCEDURE Eliminar_calificacion(
+    IN p_idpedido INT,
+    IN p_numpedido INT
+)
+BEGIN
+    
+    DELETE FROM CALIFICACION WHERE idpedido = p_idpedido AND numpedido = p_numpedido;
+    COMMIT;
+END //
+DELIMITER ;
+-- =================================================================
+-- ======================TABLA CALIFICACION=========================
+-- =================================================================
+
+-- Agregar Cliente
+DELIMITER //
+CREATE PROCEDURE sp_agregar_cliente(
+    IN p_telefono INT,
+    IN p_email VARCHAR(255),
+    IN p_fecha_nacimiento DATE,
+    IN p_cedula VARCHAR(20),
+    IN p_direccion VARCHAR(255),
+    IN p_edad INT,
+    IN p_numpedido INT,
+    IN p_id_empleado INT
+)
+BEGIN
+    DECLARE existe_registro INT;
+
+    SELECT COUNT(*) INTO existe_registro FROM Cliente WHERE Telefono = p_telefono AND numpedido = p_numpedido;
+    IF existe_registro > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Entrada duplicada para el número de teléfono y número de pedido especificados';
+    ELSE
+        -- Insertar datos
+        INSERT INTO Cliente (Telefono, email, fecha_nacimiento, cedula, direccion, edad, numpedido, id_empleado)
+        VALUES (p_telefono, p_email, p_fecha_nacimiento, p_cedula, p_direccion, p_edad, p_numpedido, p_id_empleado);
+        COMMIT;
+    END IF;
+END //
+DELIMITER ;
+
+-- Consultar Cliente
+DELIMITER //
+CREATE PROCEDURE sp_consultar_cliente(
+    IN p_telefono INT,
+    IN p_numpedido INT
+)
+BEGIN
+    DECLARE existe_registro INT;
+
+    SELECT COUNT(*) INTO existe_registro FROM Cliente WHERE Telefono = p_telefono AND numpedido = p_numpedido;
+    IF existe_registro = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'No se encontró la entrada para el número de teléfono y número de pedido especificados';
+    ELSE
+        SELECT * FROM Cliente WHERE Telefono = p_telefono AND numpedido = p_numpedido;
+    END IF;
+END //
+DELIMITER ;
+
+
+
+
+
+-- Actualizar Cliente
+DELIMITER //
+CREATE PROCEDURE sp_actualizar_cliente(
+    IN p_telefono VARCHAR(15),
+    IN p_numpedido INT,
+    IN p_nueva_email VARCHAR(255),
+    IN p_nueva_fecha_nacimiento DATE,
+    IN p_nueva_cedula VARCHAR(15),
+    IN p_nueva_direccion VARCHAR(255),
+    IN p_nueva_edad INT,
+    IN p_nuevo_numpedido INT,
+    IN p_nuevo_id_empleado INT
+)
+BEGIN
+    DECLARE v_email VARCHAR(255);
+    DECLARE v_fecha_nacimiento DATE;
+    DECLARE v_cedula VARCHAR(15);
+    DECLARE v_direccion VARCHAR(255);
+    DECLARE v_edad INT;
+    DECLARE v_numpedido INT;
+    DECLARE v_id_empleado INT;
+
+    SELECT email, fecha_nacimiento, cedula, direccion, edad, numpedido, id_empleado
+    INTO v_email, v_fecha_nacimiento, v_cedula, v_direccion, v_edad, v_numpedido, v_id_empleado
+    FROM Cliente
+    WHERE Telefono = p_telefono AND numpedido = p_numpedido;
+
+    IF v_email IS NOT NULL AND p_nueva_email IS NOT NULL THEN
+        SET v_email = p_nueva_email;
+    END IF;
+    IF p_nueva_fecha_nacimiento IS NOT NULL THEN
+        SET v_fecha_nacimiento = p_nueva_fecha_nacimiento;
+    END IF;
+    IF v_cedula IS NOT NULL AND p_nueva_cedula IS NOT NULL THEN
+        SET v_cedula = p_nueva_cedula;
+    END IF;
+    IF v_direccion IS NOT NULL AND p_nueva_direccion IS NOT NULL THEN
+        SET v_direccion = p_nueva_direccion;
+    END IF;
+    IF v_edad IS NOT NULL AND p_nueva_edad IS NOT NULL THEN
+        SET v_edad = p_nueva_edad;
+    END IF;
+    IF v_numpedido IS NOT NULL AND p_nuevo_numpedido IS NOT NULL THEN
+        SET v_numpedido = p_nuevo_numpedido;
+    END IF;
+
+    IF p_nuevo_id_empleado IS NOT NULL THEN
+        SET v_id_empleado = p_nuevo_id_empleado;
+    ELSE
+        SET v_id_empleado = NULL;
+    END IF;
+
+    UPDATE Cliente
+    SET email = v_email,
+        fecha_nacimiento = v_fecha_nacimiento,
+        cedula = v_cedula,
+        direccion = v_direccion,
+        edad = v_edad,
+        numpedido = v_numpedido,
+        id_empleado = v_id_empleado
+    WHERE Telefono = p_telefono AND numpedido = p_numpedido;
+END //
+DELIMITER ;
+
+
+
+
+
+-- Eliminar Cliente
+DELIMITER //
+CREATE PROCEDURE sp_eliminar_cliente(
+    IN p_telefono INT,
+    IN p_numpedido INT
+)
+BEGIN
+    DELETE FROM Cliente WHERE Telefono = p_telefono AND numpedido = p_numpedido;
+    COMMIT;
+END //
+DELIMITER ;
+
+-- =================================================================
+-- ======================TABLA ESTABLECIMIENTO======================
+-- =================================================================
+
+-- Agregar Establecimiento
+DELIMITER //
+CREATE PROCEDURE sp_agregar_establecimiento(
+    IN p_idEstablecimiento VARCHAR(255),
+    IN p_numpedido INT,
+    IN p_ubicacion VARCHAR(255),
+    IN p_calificacion INT,
+    IN p_distancia INT,
+    IN p_telefono VARCHAR(20),
+    IN p_tipoEstablecimiento VARCHAR(255)
+)
+BEGIN
+    DECLARE existe_registro INT;
+
+    SELECT COUNT(*) INTO existe_registro FROM Establecimiento WHERE idEstablecimiento = p_idEstablecimiento AND numpedido = p_numpedido;
+    IF existe_registro > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Entrada duplicada para el ID del establecimiento y número de pedido especificados';
+    ELSE
+        -- Insertar datos
+        INSERT INTO Establecimiento (idEstablecimiento, numpedido, ubicacion, calificacion, distancia, telefono, tipoEstablecimiento)
+        VALUES (p_idEstablecimiento, p_numpedido, p_ubicacion, p_calificacion, p_distancia, p_telefono, p_tipoEstablecimiento);
+        COMMIT;
+    END IF;
+END //
+DELIMITER ;
+
+-- Consultar Establecimiento
+DELIMITER //
+CREATE PROCEDURE sp_consultar_establecimiento(
+    IN p_idEstablecimiento VARCHAR(255),
+    IN p_numpedido INT
+)
+BEGIN
+    DECLARE existe_registro INT;
+
+    SELECT COUNT(*) INTO existe_registro FROM Establecimiento WHERE idEstablecimiento = p_idEstablecimiento AND numpedido = p_numpedido;
+    IF existe_registro = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'No se encontró la entrada para el ID del establecimiento y número de pedido especificados';
+    ELSE
+        SELECT * FROM Establecimiento WHERE idEstablecimiento = p_idEstablecimiento AND numpedido = p_numpedido;
+    END IF;
+END //
+DELIMITER ;
+
+-- Actualizar Establecimiento
+DELIMITER //
+CREATE PROCEDURE sp_actualizar_establecimiento(
+    IN p_idEstablecimiento VARCHAR(255),
+    IN p_numpedido INT,
+    IN p_nueva_ubicacion VARCHAR(255),
+    IN p_nueva_calificacion INT,
+    IN p_nueva_distancia INT,
+    IN p_nuevo_telefono VARCHAR(20),
+    IN p_nuevo_tipoEstablecimiento VARCHAR(255)
+)
+BEGIN
+    DECLARE existe_registro INT;
+
+    SELECT COUNT(*) INTO existe_registro FROM Establecimiento WHERE idEstablecimiento = p_idEstablecimiento AND numpedido = p_numpedido;
+    IF existe_registro = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'No se encontró la entrada para el ID del establecimiento y número de pedido especificados';
+    ELSE
+        UPDATE Establecimiento
+        SET ubicacion = COALESCE(p_nueva_ubicacion, ubicacion),
+            calificacion = COALESCE(p_nueva_calificacion, calificacion),
+            distancia = COALESCE(p_nueva_distancia, distancia),
+            telefono = COALESCE(p_nuevo_telefono, telefono),
+            tipoEstablecimiento = COALESCE(p_nuevo_tipoEstablecimiento, tipoEstablecimiento)
+        WHERE idEstablecimiento = p_idEstablecimiento AND numpedido = p_numpedido;
+        COMMIT;
+    END IF;
+END //
+DELIMITER ;
+
+-- Eliminar Establecimiento
+DELIMITER //
+CREATE PROCEDURE sp_eliminar_establecimiento(
+    IN p_idEstablecimiento VARCHAR(255),
+    IN p_numpedido INT
+)
+BEGIN
+    DELETE FROM Establecimiento WHERE idEstablecimiento = p_idEstablecimiento AND numpedido = p_numpedido;
+    COMMIT;
+END //
+DELIMITER ;
+
+-- ================================================================
+-- ======================TABLA METODO_DE_PAGO======================
+-- ================================================================
+-- Agregar Método de Pago
+DELIMITER //
+CREATE PROCEDURE sp_agregar_metodo_pago(
+    IN p_IDmetodoPago VARCHAR(255),
+    IN p_idcliente VARCHAR(255),
+    IN p_NumPedido INT,
+    IN p_tipo_tarjeta VARCHAR(20),
+    IN p_numTarjeta VARCHAR(20),
+    IN p_apodo VARCHAR(255),
+    IN p_fechaExpi DATE
+)
+BEGIN
+    DECLARE existe_registro INT;
+
+    SELECT COUNT(*) INTO existe_registro FROM MetodoDePago WHERE IDmetodoPago = p_IDmetodoPago;
+    IF existe_registro > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Entrada duplicada para el ID del método de pago especificado';
+    ELSE
+        -- Insertar datos en la tabla MétodoDePago
+        INSERT INTO MetodoDePago (IDmetodoPago, idcliente, NumPedido) VALUES (p_IDmetodoPago, p_idcliente, p_NumPedido);
+
+        -- Insertar datos en la tabla correspondiente según el tipo de tarjeta
+        IF p_tipo_tarjeta = 'debito' THEN
+            INSERT INTO TarjetaDebito (IDmetodoPago, numTarjeta, apodo, FechaExpi) VALUES (p_IDmetodoPago, p_numTarjeta, p_apodo, p_fechaExpi);
+        ELSEIF p_tipo_tarjeta = 'credito' THEN
+            INSERT INTO TarjetaCredito (IDmetodoPago, numTarjeta, apodo, FechaExpi) VALUES (p_IDmetodoPago, p_numTarjeta, p_apodo, p_fechaExpi);
+        END IF;
+
+        COMMIT;
+    END IF;
+END //
+DELIMITER ;
+
+DELIMITER //
+
+CREATE PROCEDURE sp_consultar_metodo_pago(
+    IN p_IDmetodoPago VARCHAR(255)
+)
+BEGIN
+    DECLARE existe_registro INT;
+
+    SELECT COUNT(*) INTO existe_registro FROM MetodoDePago WHERE IDmetodoPago = p_IDmetodoPago;
+    
+    IF existe_registro = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'No se encontró la entrada para el ID del método de pago especificado';
+    ELSE
+        -- Consultar información de MétodoDePago y tarjetas vinculadas
+        SELECT mp.*, td.numTarjeta AS tarjetaDebito, tc.numTarjeta AS tarjetaCredito
+        FROM MetodoDePago mp
+        LEFT JOIN TarjetaDebito td ON mp.IDmetodoPago = td.IDmetodoPago
+        LEFT JOIN TarjetaCredito tc ON mp.IDmetodoPago = tc.IDmetodoPago
+        WHERE mp.IDmetodoPago = p_IDmetodoPago;
+    END IF;
+END //
+
+DELIMITER ;
+
+-- ACTUALIZA METODO DE PAGO
+
+DELIMITER //
+
+CREATE PROCEDURE sp_actualizar_metodo_pago(
+    IN p_IDmetodoPago VARCHAR(255),
+    IN p_nuevo_idcliente VARCHAR(255),
+    IN p_nuevo_NumPedido INT,
+    IN p_tipo_tarjeta VARCHAR(20),
+    IN p_nuevo_numTarjeta VARCHAR(20),
+    IN p_nuevo_apodo VARCHAR(255),
+    IN p_nueva_fechaExpi DATE
+)
+BEGIN
+    DECLARE existe_registro INT;
+
+    SELECT COUNT(*) INTO existe_registro FROM MetodoDePago WHERE IDmetodoPago = p_IDmetodoPago;
+    
+    IF existe_registro = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'No se encontró la entrada para el ID del método de pago especificado';
+    ELSE
+        -- Actualizar datos en la tabla MétodoDePago
+        UPDATE MetodoDePago
+        SET idcliente = COALESCE(p_nuevo_idcliente, idcliente),
+            NumPedido = COALESCE(p_nuevo_NumPedido, NumPedido)
+        WHERE IDmetodoPago = p_IDmetodoPago;
+
+        -- Actualizar datos en la tabla correspondiente según el tipo de tarjeta
+        IF p_tipo_tarjeta = 'debito' THEN
+            UPDATE TarjetaDebito
+            SET numTarjeta = COALESCE(p_nuevo_numTarjeta, numTarjeta),
+                apodo = COALESCE(p_nuevo_apodo, apodo),
+                FechaExpi = COALESCE(p_nueva_fechaExpi, FechaExpi)
+            WHERE IDmetodoPago = p_IDmetodoPago;
+        ELSEIF p_tipo_tarjeta = 'credito' THEN
+            UPDATE TarjetaCredito
+            SET numTarjeta = COALESCE(p_nuevo_numTarjeta, numTarjeta),
+                apodo = COALESCE(p_nuevo_apodo, apodo),
+                FechaExpi = COALESCE(p_nueva_fechaExpi, FechaExpi)
+            WHERE IDmetodoPago = p_IDmetodoPago;
+        END IF;
+
+        COMMIT;
+    END IF;
+END //
+
+DELIMITER ;
+
+
+
+
+
+
+-- Eliminar Método de Pago
+DELIMITER //
+CREATE PROCEDURE sp_eliminar_metodo_pago(
+    IN p_IDmetodoPago VARCHAR(255)
+)
+BEGIN
+    -- Eliminar tarjetas vinculadas (si existen)
+    DELETE FROM TarjetaDebito WHERE IDmetodoPago = p_IDmetodoPago;
+    DELETE FROM TarjetaCredito WHERE IDmetodoPago = p_IDmetodoPago;
+
+    -- Eliminar entrada en la tabla MétodoDePago
+    DELETE FROM MetodoDePago WHERE IDmetodoPago = p_IDmetodoPago;
+
+    COMMIT;
+END //
+DELIMITER ;
+
+
+
+
+
+-- ============================================================
+-- ======================TABLA PRODUCTO========================
+-- ============================================================
+
+-- Agregar Producto
+DELIMITER //
+CREATE PROCEDURE sp_agregar_producto(
+    IN p_idproducto VARCHAR(255),
+    IN p_nombre VARCHAR(255),
+    IN p_foto LONGBLOB,
+    IN p_precio DECIMAL(10, 2),
+    IN p_descripcion TEXT,
+    IN p_descuento DECIMAL(5, 2),
+    IN p_idEstablecimiento VARCHAR(255)
+)
+BEGIN
+    DECLARE existe_registro INT;
+
+    SELECT COUNT(*) INTO existe_registro FROM Producto WHERE idproducto = p_idproducto;
+    IF existe_registro > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Entrada duplicada para el ID del producto especificado';
+    ELSE
+        INSERT INTO Producto (idproducto, nombre, foto, precio, descripcion, descuento, idEstablecimiento) VALUES (p_idproducto, p_nombre, p_foto, p_precio, p_descripcion, p_descuento, p_idEstablecimiento);
+        COMMIT;
+    END IF;
+END //
+DELIMITER ;
+
+-- Consultar Producto
+DELIMITER //
+CREATE PROCEDURE sp_consultar_producto(
+    IN p_idproducto VARCHAR(255)
+)
+BEGIN
+    DECLARE existe_registro INT;
+
+    SELECT COUNT(*) INTO existe_registro FROM Producto WHERE idproducto = p_idproducto;
+    IF existe_registro = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'No se encontró la entrada para el ID del producto especificado';
+    ELSE
+        SELECT * FROM Producto WHERE idproducto = p_idproducto;
+    END IF;
+END //
+DELIMITER ;
+
+
+
+
+
+-- Actualizar Producto
+DELIMITER //
+CREATE PROCEDURE sp_actualizar_producto(
+    IN p_idproducto VARCHAR(255),
+    IN p_nuevo_nombre VARCHAR(255),
+    IN p_nueva_foto LONGBLOB,
+    IN p_nuevo_precio DECIMAL(10, 2),
+    IN p_nueva_descripcion TEXT,
+    IN p_nuevo_descuento DECIMAL(5, 2),
+    IN p_nuevo_idEstablecimiento VARCHAR(255)
+)
+BEGIN
+    DECLARE existe_registro INT;
+
+    SELECT COUNT(*) INTO existe_registro FROM Producto WHERE idproducto = p_idproducto;
+    IF existe_registro = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'No se encontró la entrada para el ID del producto especificado';
+    ELSE
+        UPDATE Producto
+        SET
+            nombre = IF(CHAR_LENGTH(p_nuevo_nombre) > 0, p_nuevo_nombre, nombre),
+            foto = IF(CHAR_LENGTH(p_nueva_foto) > 0, p_nueva_foto, foto),
+            precio = IF(p_nuevo_precio IS NOT NULL, p_nuevo_precio, precio),
+            descripcion = IF(CHAR_LENGTH(p_nueva_descripcion) > 0, p_nueva_descripcion, descripcion),
+            descuento = IF(p_nuevo_descuento IS NOT NULL, p_nuevo_descuento, descuento),
+            idEstablecimiento = IF(CHAR_LENGTH(p_nuevo_idEstablecimiento) > 0, p_nuevo_idEstablecimiento, idEstablecimiento)
+        WHERE idproducto = p_idproducto;
+
+        COMMIT;
+    END IF;
+END //
+DELIMITER ;
+
+
+
+
+
+
+-- Eliminar Producto
+DELIMITER //
+CREATE PROCEDURE sp_eliminar_producto(
+    IN p_idproducto VARCHAR(255)
+)
+BEGIN
+    DECLARE existe_registro INT;
+
+    SELECT COUNT(*) INTO existe_registro FROM Producto WHERE idproducto = p_idproducto;
+    IF existe_registro = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'No se encontró la entrada para el ID del producto especificado';
+    ELSE
+        DELETE FROM Producto WHERE idproducto = p_idproducto;
+        COMMIT;
+    END IF;
+END //
+DELIMITER ;
+
+-- ============================================================
+-- ======================TABLA REPARTIDOR======================
+-- ============================================================
+-- Agregar Repartidor
+DELIMITER //
+CREATE PROCEDURE sp_agregar_repartidor(
+    IN p_cedula VARCHAR(255),
+    IN p_nombre VARCHAR(255),
+    IN p_telefono VARCHAR(255),
+    IN p_calificacion DECIMAL(3, 2),
+    IN p_fechanacimiento DATE,
+    IN p_email VARCHAR(255),
+    IN p_numpedido VARCHAR(255)
+)
+BEGIN
+    DECLARE existe_registro INT;
+
+    SELECT COUNT(*) INTO existe_registro FROM Repartidor WHERE cedula = p_cedula;
+    IF existe_registro > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Entrada duplicada para la cédula del repartidor especificado';
+    ELSE
+        INSERT INTO Repartidor (cedula, nombre, telefono, calificacion, fechanacimiento, email, numpedido) VALUES (p_cedula, p_nombre, p_telefono, p_calificacion, p_fechanacimiento, p_email, p_numpedido);
+        COMMIT;
+    END IF;
+END //
+DELIMITER ;
+
+-- Consultar Repartidor
+DELIMITER //
+CREATE PROCEDURE sp_consultar_repartidor(
+    IN p_cedula VARCHAR(255)
+)
+BEGIN
+    DECLARE existe_registro INT;
+
+    SELECT COUNT(*) INTO existe_registro FROM Repartidor WHERE cedula = p_cedula;
+    IF existe_registro = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'No se encontró la entrada para la cédula del repartidor especificado';
+    ELSE
+        SELECT * FROM Repartidor WHERE cedula = p_cedula;
+    END IF;
+END //
+DELIMITER ;
+
+-- Actualizar Repartidor
+DELIMITER //
+CREATE PROCEDURE sp_actualizar_repartidor(
+    IN p_cedula VARCHAR(255),
+    IN p_nuevo_nombre VARCHAR(255),
+    IN p_nuevo_telefono VARCHAR(255),
+    IN p_nueva_calificacion DECIMAL(3, 2),
+    IN p_nueva_fechanacimiento DATE,
+    IN p_nuevo_email VARCHAR(255),
+    IN p_nuevo_numpedido VARCHAR(255)
+)
+BEGIN
+    DECLARE existe_registro INT;
+
+    SELECT COUNT(*) INTO existe_registro FROM Repartidor WHERE cedula = p_cedula;
+    IF existe_registro = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'No se encontró la entrada para la cédula del repartidor especificado';
+    ELSE
+        UPDATE Repartidor
+        SET nombre = COALESCE(p_nuevo_nombre, nombre),
+            telefono = COALESCE(p_nuevo_telefono, telefono),
+            calificacion = COALESCE(p_nueva_calificacion, calificacion),
+            fechanacimiento = COALESCE(p_nueva_fechanacimiento, fechanacimiento),
+            email = COALESCE(p_nuevo_email, email),
+            numpedido = COALESCE(p_nuevo_numpedido, numpedido)
+        WHERE cedula = p_cedula;
+
+        COMMIT;
+    END IF;
+END //
+DELIMITER ;
+
+
+-- Eliminar Repartidor
+DELIMITER //
+CREATE PROCEDURE sp_eliminar_repartidor(
+    IN p_cedula BIGINT
+)
+BEGIN
+    -- Desactivar temporáneamente las restricciones de clave externa
+    SET foreign_key_checks = 0;
+
+    -- Eliminar todas las relaciones que dependen del repartidor
+    DELETE FROM Pedido WHERE cedula = p_cedula;
+    DELETE FROM CALIFICACION WHERE numpedido IN (SELECT numpedido FROM Pedido WHERE cedula = p_cedula);
+    DELETE FROM MetodoDePago WHERE NumPedido IN (SELECT numpedido FROM Pedido WHERE cedula = p_cedula);
+
+    -- Eliminar el repartidor
+    DELETE FROM Repartidor WHERE cedula = p_cedula;
+
+    -- Reactivar las restricciones de clave externa
+    SET foreign_key_checks = 1;
+
+    COMMIT;
+END //
+DELIMITER ;
+
+
+
+
