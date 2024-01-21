@@ -1,3 +1,16 @@
+-- ===========================CREACION DE USUARIOS============================
+CREATE USER 'usuario1'@'localhost' IDENTIFIED BY '12345';
+CREATE USER 'usuario2'@'localhost' IDENTIFIED BY '67890';
+CREATE USER 'usuario3'@'localhost' IDENTIFIED BY '24680';
+CREATE USER 'usuario4'@'localhost' IDENTIFIED BY '13579';
+CREATE USER 'usuario5'@'localhost' IDENTIFIED BY '11235';
+-- ===========================OTORGAR PERMISOS ============================
+GRANT SELECT, INSERT, UPDATE, DELETE ON pedidosya.* TO 'usuario1'@'localhost';
+GRANT SELECT, INSERT ON pedidosya.* TO 'usuario2'@'localhost';
+GRANT SELECT ON pedidosya.* TO 'usuario3'@'localhost';
+GRANT INSERT, UPDATE ON pedidosya.* TO 'usuario4'@'localhost';
+GRANT DELETE ON pedidosya.* TO 'usuario5'@'localhost';
+
 -- ===========================TRIGGER============================
 -- TRIGGER PARA INSERTAR EN PEDIDO --
 DELIMITER //
@@ -65,8 +78,6 @@ SELECT * FROM HistorialCompras;
 SELECT * FROM PedidosPendientes;
 SELECT * FROM PedidosCancelados;
 
-
--- ===========================TRIGGERS============================
 
 
 
