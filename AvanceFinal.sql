@@ -1,3 +1,29 @@
+-- ===========================TRIGGER============================
+-- TRIGGER PARA INSERTAR EN PEDIDO --
+DELIMITER //
+CREATE TRIGGER after_pedido_insert
+AFTER INSERT ON Pedido
+FOR EACH ROW
+BEGIN
+    
+    UPDATE Pedido SET estado = 'Pendiente' WHERE numpedido = NEW.numpedido;
+END;
+//
+DELIMITER ;
+
+-- TRIGGER PARA ACTUALIZAR EN PRODUCTO --
+DELIMITER //
+CREATE TRIGGER after_producto_update
+AFTER UPDATE ON Producto
+FOR EACH ROW
+BEGIN
+    
+    UPDATE Producto SET descripcion = CONCAT(descripcion, ' - Precio actualizado') WHERE idproducto = NEW.idproducto;
+END;
+//
+DELIMITER ;
+
+
 -- ===========================REPORTES============================
 -- Detalles del pedido y  Calificacion del Repartidor
 CREATE VIEW DetallesPedidoCalificacion AS
