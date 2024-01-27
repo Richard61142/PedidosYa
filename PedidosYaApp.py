@@ -103,10 +103,8 @@ def agregar_cliente():
 
 def consultar_cliente():
     telefono = input("Ingrese el número de teléfono: ")
-    numpedido = input("Ingrese el número del pedido: ")
 
-    cursor.execute("SELECT * FROM Cliente WHERE Telefono = %s AND numpedido = %s",
-                   (telefono, numpedido))
+    cursor.execute("SELECT * FROM Cliente WHERE Telefono = %s", (telefono,))
     row = cursor.fetchone()
 
     if row:
@@ -124,10 +122,8 @@ def consultar_cliente():
 
 def actualizar_cliente():
     telefono = input("Ingrese el número de teléfono que desea actualizar: ")
-    numpedido = input("Ingrese el número del pedido que desea actualizar: ")
 
-    cursor.execute("SELECT * FROM Cliente WHERE Telefono = %s AND numpedido = %s",
-                   (telefono, numpedido))
+    cursor.execute("SELECT * FROM Cliente WHERE Telefono = %s", (telefono,))
     row = cursor.fetchone()
 
     if row:
@@ -141,7 +137,7 @@ def actualizar_cliente():
         print("Número Pedido:", row[6])
         print("ID Empleado:", row[7])
 
-        
+        # Variables para almacenar los nuevos valores
         nueva_email = input("Ingrese el nuevo correo electrónico (presione Enter para dejar sin cambios): ")
         nueva_fecha_nacimiento = input("Ingrese la nueva fecha de nacimiento (presione Enter para dejar sin cambios): ")
         nueva_cedula = input("Ingrese la nueva cédula (presione Enter para dejar sin cambios): ")
@@ -150,7 +146,7 @@ def actualizar_cliente():
         nuevo_numpedido = input("Ingrese el nuevo número del pedido (presione Enter para dejar sin cambios): ")
         nuevo_id_empleado = input("Ingrese el nuevo ID del empleado (presione Enter para dejar sin cambios): ")
 
-        
+        # Asignar los nuevos valores a las variables
         row = (
             row[0],  # Teléfono
             nueva_email if nueva_email else row[1],  # Email
@@ -162,8 +158,8 @@ def actualizar_cliente():
             nuevo_id_empleado if nuevo_id_empleado else row[7]  # ID Empleado
         )
 
-        cursor.execute("UPDATE Cliente SET email = %s, fecha_nacimiento = %s, cedula = %s, direccion = %s, edad = %s, numpedido = %s, id_empleado = %s WHERE Telefono = %s AND numpedido = %s",
-                       (row[1], row[2], row[3], row[4], row[5], row[6], row[7], telefono, numpedido))
+        cursor.execute("UPDATE Cliente SET email = %s, fecha_nacimiento = %s, cedula = %s, direccion = %s, edad = %s, numpedido = %s, id_empleado = %s WHERE Telefono = %s",
+                       (row[1], row[2], row[3], row[4], row[5], row[6], row[7], telefono))
         connection.commit()
         print("Registro actualizado exitosamente.")
     else:
@@ -171,12 +167,11 @@ def actualizar_cliente():
 
 def eliminar_cliente():
     telefono = input("Ingrese el número de teléfono que desea eliminar: ")
-    numpedido = input("Ingrese el número del pedido que desea eliminar: ")
 
-    cursor.execute("DELETE FROM Cliente WHERE Telefono = %s AND numpedido = %s",
-                   (telefono, numpedido))
+    cursor.execute("DELETE FROM Cliente WHERE Telefono = %s", (telefono,))
     connection.commit()
     print("Registro eliminado exitosamente.")
+
 
 
 ############################### ESTABLECIMIENTO ###############################
