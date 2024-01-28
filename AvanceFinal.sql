@@ -20,6 +20,9 @@ GRANT SELECT ON pedidosya.PedidosCancelados TO 'usuario3'@'localhost';
 GRANT EXECUTE ON PROCEDURE pedidosya.sp_agregar_cliente TO 'usuario5'@'localhost';
 GRANT EXECUTE ON PROCEDURE pedidosya.sp_consultar_cliente TO 'usuario5'@'localhost';
 
+-- ===========================PERMISO A STORED PROCEDURE============================
+CREATE INDEX idx_pedidos_fecha ON Pedido(fecha_pedido);
+
 -- ===========================TRIGGER============================
 -- TRIGGER PARA INSERTAR EN PEDIDO --
 DELIMITER //
