@@ -4,6 +4,7 @@ CREATE USER 'usuario2'@'localhost' IDENTIFIED BY '67890';
 CREATE USER 'usuario3'@'localhost' IDENTIFIED BY '24680';
 CREATE USER 'usuario4'@'localhost' IDENTIFIED BY '13579';
 CREATE USER 'usuario5'@'localhost' IDENTIFIED BY '11235';
+
 -- ===========================OTORGAR PERMISOS ============================
 GRANT SELECT, INSERT, UPDATE, DELETE ON pedidosya.* TO 'usuario1'@'localhost';
 GRANT SELECT, INSERT, DELETE ON pedidosya.* TO 'usuario2'@'localhost';
@@ -15,8 +16,9 @@ GRANT SELECT ON pedidosya.* TO 'usuario5'@'localhost';
 GRANT SELECT ON pedidosya.HistorialCompras TO 'usuario3'@'localhost';
 GRANT SELECT ON pedidosya.PedidosCancelados TO 'usuario3'@'localhost';
 
--- ===========================PERMISOS A VISTAS============================
-
+-- ===========================PERMISO A STORED PROCEDURE============================
+GRANT EXECUTE ON PROCEDURE pedidosya.sp_agregar_cliente TO 'usuario5'@'localhost';
+GRANT EXECUTE ON PROCEDURE pedidosya.sp_consultar_cliente TO 'usuario5'@'localhost';
 
 -- ===========================TRIGGER============================
 -- TRIGGER PARA INSERTAR EN PEDIDO --
@@ -43,7 +45,6 @@ END;
 //
 DELIMITER ;
 
-
 -- ===========================REPORTES============================
 -- Detalles del pedido y  Calificacion del Repartidor
 CREATE VIEW DetallesPedidoCalificacion AS
@@ -69,8 +70,6 @@ JOIN Establecimiento E ON P.establecimiento = E.idEstablecimiento
 JOIN Cliente C ON P.telefono = C.telefono
 WHERE P.estado = 'Pendiente';
 
-
-
 -- Pedidos Cancelados
 CREATE VIEW PedidosCancelados AS
 SELECT P.numpedido, C.motivo, C.estadoDelPedido, Cl.direccion, Cl.fecha_nacimiento
@@ -79,22 +78,12 @@ JOIN Cancelacion C ON P.numpedido = C.numpedido
 JOIN Cliente Cl ON P.telefono = Cl.telefono
 WHERE C.estadoDelPedido = 'Cancelado';
 
-
 SELECT * FROM DetallesPedidoCalificacion;
 SELECT * FROM HistorialCompras;
 SELECT * FROM PedidosPendientes;
 SELECT * FROM PedidosCancelados;
 
-
 -- ===========================TRIGGERS============================
-
-
-
-
-
-
-
-
 
 
 
