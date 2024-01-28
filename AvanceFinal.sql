@@ -83,7 +83,10 @@ SELECT * FROM HistorialCompras;
 SELECT * FROM PedidosPendientes;
 SELECT * FROM PedidosCancelados;
 
--- ===========================TRIGGERS============================
+
+
+
+
 
 
 
@@ -118,18 +121,17 @@ DELIMITER ;
 -- Consultar calificacion
 DELIMITER //
 CREATE PROCEDURE Consultar_calificacion(
-    IN p_idpedido INT,
-    IN p_numpedido INT
+    IN p_idpedido INT
 )
 BEGIN
     DECLARE existe_registro INT;
 
-    SELECT COUNT(*) INTO existe_registro FROM CALIFICACION WHERE idpedido = p_idpedido AND numpedido = p_numpedido;
+    SELECT COUNT(*) INTO existe_registro FROM CALIFICACION WHERE idpedido = p_idpedido;
     IF existe_registro = 0 THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'No se encontró la entrada para el ID y número de pedido especificados';
+        SET MESSAGE_TEXT = 'No se encontró la entrada para el ID de pedido especificado';
     ELSE
-        SELECT * FROM CALIFICACION WHERE idpedido = p_idpedido AND numpedido = p_numpedido;
+        SELECT * FROM CALIFICACION WHERE idpedido = p_idpedido;
     END IF;
 END //
 DELIMITER ;
@@ -138,44 +140,74 @@ DELIMITER ;
 DELIMITER //
 CREATE PROCEDURE Actualizar_calificacion(
     IN p_idpedido INT,
-    IN p_numpedido INT,
-    IN p_nueva_calificacionEstablecimiento INT,
-    IN p_nueva_calificacionRepartidor INT,
-    IN p_nueva_calificacionProducto INT
+    IN p_nueva_calificacionEstablecimiento VARCHAR(250),
+    IN p_nueva_calificacionRepartidor VARCHAR(250),
+    IN p_nueva_calificacionProducto VARCHAR(250)
 )
 BEGIN
     DECLARE existe_registro INT;
 
-    SELECT COUNT(*) INTO existe_registro FROM CALIFICACION WHERE idpedido = p_idpedido AND numpedido = p_numpedido;
+    SELECT COUNT(*) INTO existe_registro FROM CALIFICACION WHERE idpedido = p_idpedido;
     IF existe_registro = 0 THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'No se encontró la entrada para el ID y número de pedido especificados';
+        SET MESSAGE_TEXT = 'No se encontró la entrada para el ID de pedido especificado';
     ELSE
-        
         UPDATE CALIFICACION
         SET calificacionEstablecimiento = p_nueva_calificacionEstablecimiento,
             calificacionRepartidor = p_nueva_calificacionRepartidor,
             calificacionProducto = p_nueva_calificacionProducto
-        WHERE idpedido = p_idpedido AND numpedido = p_numpedido;
+        WHERE idpedido = p_idpedido;
         COMMIT;
     END IF;
 END //
 DELIMITER ;
+-- Procedimiento para actualizar la calificación del repartidor
+DELIMITER //
+CREATE PROCEDURE Actualizar_calificacion_repartidor(IN idpedido_param INT, IN nueva_calificacion_param VARCHAR(255))
+BEGIN
+    UPDATE CALIFICACION SET calificacionRepartidor = nueva_calificacion_param WHERE idpedido = idpedido_param;
+END //
+DELIMITER ;
+-- Procedimiento para actualizar la calificación del establecimiento
+DELIMITER //
+CREATE PROCEDURE Actualizar_calificacion_establecimiento(IN idpedido_param INT, IN nueva_calificacion_param VARCHAR(255))
+BEGIN
+    UPDATE CALIFICACION SET calificacionEstablecimiento = nueva_calificacion_param WHERE idpedido = idpedido_param;
+END //
+DELIMITER ;
 
--- Eliminar calificacion
+-- Procedimiento para actualizar la calificación del producto
+DELIMITER //
+CREATE PROCEDURE Actualizar_calificacion_producto(IN idpedido_param INT, IN nueva_calificacion_param VARCHAR(255))
+BEGIN
+    UPDATE CALIFICACION SET calificacionProducto = nueva_calificacion_param WHERE idpedido = idpedido_param;
+END //
+DELIMITER ;
+
+
+
+
+-- Eliminar Calificación desactivando restricciones de clave foránea
 DELIMITER //
 CREATE PROCEDURE Eliminar_calificacion(
-    IN p_idpedido INT,
-    IN p_numpedido INT
+    IN p_id_pedido INT
 )
 BEGIN
-    
-    DELETE FROM CALIFICACION WHERE idpedido = p_idpedido AND numpedido = p_numpedido;
+    -- Desactivar restricciones de clave foránea
+    SET foreign_key_checks = 0;
+
+    -- Eliminar la calificación
+    DELETE FROM Calificacion WHERE idpedido = p_id_pedido;
+
+    -- Activar restricciones de clave foránea nuevamente
+    SET foreign_key_checks = 1;
+
     COMMIT;
 END //
 DELIMITER ;
+
 -- =================================================================
--- ======================TABLA CALIFICACION=========================
+-- ======================TABLA CLIENTE==============================
 -- =================================================================
 
 -- Agregar Cliente
@@ -209,38 +241,32 @@ DELIMITER ;
 -- Consultar Cliente
 DELIMITER //
 CREATE PROCEDURE sp_consultar_cliente(
-    IN p_telefono INT,
-    IN p_numpedido INT
+    IN p_telefono INT
 )
 BEGIN
     DECLARE existe_registro INT;
 
-    SELECT COUNT(*) INTO existe_registro FROM Cliente WHERE Telefono = p_telefono AND numpedido = p_numpedido;
+    SELECT COUNT(*) INTO existe_registro FROM Cliente WHERE Telefono = p_telefono;
     IF existe_registro = 0 THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'No se encontró la entrada para el número de teléfono y número de pedido especificados';
+        SET MESSAGE_TEXT = 'No se encontró la entrada para el número de teléfono especificado';
     ELSE
-        SELECT * FROM Cliente WHERE Telefono = p_telefono AND numpedido = p_numpedido;
+        SELECT * FROM Cliente WHERE Telefono = p_telefono;
     END IF;
 END //
 DELIMITER ;
-
-
-
-
 
 -- Actualizar Cliente
 DELIMITER //
 CREATE PROCEDURE sp_actualizar_cliente(
     IN p_telefono VARCHAR(15),
-    IN p_numpedido INT,
     IN p_nueva_email VARCHAR(255),
     IN p_nueva_fecha_nacimiento DATE,
     IN p_nueva_cedula VARCHAR(15),
     IN p_nueva_direccion VARCHAR(255),
     IN p_nueva_edad INT,
-    IN p_nuevo_numpedido INT,
-    IN p_nuevo_id_empleado INT
+    IN p_nuevo_numpedido VARCHAR(250),
+    IN p_nuevo_id_empleado VARCHAR(250)
 )
 BEGIN
     DECLARE v_email VARCHAR(255);
@@ -248,13 +274,13 @@ BEGIN
     DECLARE v_cedula VARCHAR(15);
     DECLARE v_direccion VARCHAR(255);
     DECLARE v_edad INT;
-    DECLARE v_numpedido INT;
-    DECLARE v_id_empleado INT;
+    DECLARE v_numpedido VARCHAR(250);
+    DECLARE v_id_empleado VARCHAR(250);
 
     SELECT email, fecha_nacimiento, cedula, direccion, edad, numpedido, id_empleado
     INTO v_email, v_fecha_nacimiento, v_cedula, v_direccion, v_edad, v_numpedido, v_id_empleado
     FROM Cliente
-    WHERE Telefono = p_telefono AND numpedido = p_numpedido;
+    WHERE Telefono = p_telefono;
 
     IF v_email IS NOT NULL AND p_nueva_email IS NOT NULL THEN
         SET v_email = p_nueva_email;
@@ -289,25 +315,30 @@ BEGIN
         edad = v_edad,
         numpedido = v_numpedido,
         id_empleado = v_id_empleado
-    WHERE Telefono = p_telefono AND numpedido = p_numpedido;
+    WHERE Telefono = p_telefono;
 END //
 DELIMITER ;
 
 
-
-
-
--- Eliminar Cliente
+-- Eliminar Cliente desactivando restricciones de clave foránea
 DELIMITER //
 CREATE PROCEDURE sp_eliminar_cliente(
-    IN p_telefono INT,
-    IN p_numpedido INT
+    IN p_telefono INT
 )
 BEGIN
-    DELETE FROM Cliente WHERE Telefono = p_telefono AND numpedido = p_numpedido;
+    -- Desactivar restricciones de clave foránea
+    SET foreign_key_checks = 0;
+
+    -- Eliminar al cliente
+    DELETE FROM Cliente WHERE Telefono = p_telefono;
+
+    -- Activar restricciones de clave foránea nuevamente
+    SET foreign_key_checks = 1;
+
     COMMIT;
 END //
 DELIMITER ;
+
 
 -- =================================================================
 -- ======================TABLA ESTABLECIMIENTO======================
@@ -339,22 +370,20 @@ BEGIN
     END IF;
 END //
 DELIMITER ;
-
 -- Consultar Establecimiento
 DELIMITER //
 CREATE PROCEDURE sp_consultar_establecimiento(
-    IN p_idEstablecimiento VARCHAR(255),
-    IN p_numpedido INT
+    IN p_idEstablecimiento VARCHAR(255)
 )
 BEGIN
     DECLARE existe_registro INT;
 
-    SELECT COUNT(*) INTO existe_registro FROM Establecimiento WHERE idEstablecimiento = p_idEstablecimiento AND numpedido = p_numpedido;
+    SELECT COUNT(*) INTO existe_registro FROM Establecimiento WHERE idEstablecimiento = p_idEstablecimiento;
     IF existe_registro = 0 THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'No se encontró la entrada para el ID del establecimiento y número de pedido especificados';
+        SET MESSAGE_TEXT = 'No se encontró la entrada para el ID del establecimiento especificado';
     ELSE
-        SELECT * FROM Establecimiento WHERE idEstablecimiento = p_idEstablecimiento AND numpedido = p_numpedido;
+        SELECT * FROM Establecimiento WHERE idEstablecimiento = p_idEstablecimiento;
     END IF;
 END //
 DELIMITER ;
@@ -373,10 +402,10 @@ CREATE PROCEDURE sp_actualizar_establecimiento(
 BEGIN
     DECLARE existe_registro INT;
 
-    SELECT COUNT(*) INTO existe_registro FROM Establecimiento WHERE idEstablecimiento = p_idEstablecimiento AND numpedido = p_numpedido;
+    SELECT COUNT(*) INTO existe_registro FROM Establecimiento WHERE idEstablecimiento = p_idEstablecimiento;
     IF existe_registro = 0 THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'No se encontró la entrada para el ID del establecimiento y número de pedido especificados';
+        SET MESSAGE_TEXT = 'No se encontró la entrada para el ID del establecimiento especificado';
     ELSE
         UPDATE Establecimiento
         SET ubicacion = COALESCE(p_nueva_ubicacion, ubicacion),
@@ -384,7 +413,7 @@ BEGIN
             distancia = COALESCE(p_nueva_distancia, distancia),
             telefono = COALESCE(p_nuevo_telefono, telefono),
             tipoEstablecimiento = COALESCE(p_nuevo_tipoEstablecimiento, tipoEstablecimiento)
-        WHERE idEstablecimiento = p_idEstablecimiento AND numpedido = p_numpedido;
+        WHERE idEstablecimiento = p_idEstablecimiento;
         COMMIT;
     END IF;
 END //
@@ -393,14 +422,21 @@ DELIMITER ;
 -- Eliminar Establecimiento
 DELIMITER //
 CREATE PROCEDURE sp_eliminar_establecimiento(
-    IN p_idEstablecimiento VARCHAR(255),
-    IN p_numpedido INT
+    IN p_idEstablecimiento VARCHAR(255)
 )
 BEGIN
-    DELETE FROM Establecimiento WHERE idEstablecimiento = p_idEstablecimiento AND numpedido = p_numpedido;
+    -- Desactivar restricciones de clave foránea temporalmente
+    SET foreign_key_checks = 0;
+
+    -- Eliminar el establecimiento
+    DELETE FROM Establecimiento WHERE idEstablecimiento = p_idEstablecimiento;
     COMMIT;
+
+    -- Activar restricciones de clave foránea nuevamente
+    SET foreign_key_checks = 1;
 END //
 DELIMITER ;
+
 
 -- ================================================================
 -- ======================TABLA METODO_DE_PAGO======================
@@ -440,7 +476,6 @@ END //
 DELIMITER ;
 
 DELIMITER //
-
 CREATE PROCEDURE sp_consultar_metodo_pago(
     IN p_IDmetodoPago VARCHAR(255)
 )
@@ -467,7 +502,6 @@ DELIMITER ;
 -- ACTUALIZA METODO DE PAGO
 
 DELIMITER //
-
 CREATE PROCEDURE sp_actualizar_metodo_pago(
     IN p_IDmetodoPago VARCHAR(255),
     IN p_nuevo_idcliente VARCHAR(255),
@@ -518,7 +552,7 @@ DELIMITER ;
 
 
 
--- Eliminar Método de Pago
+-- Eliminar Método de Pago 
 DELIMITER //
 CREATE PROCEDURE sp_eliminar_metodo_pago(
     IN p_IDmetodoPago VARCHAR(255)
@@ -528,13 +562,12 @@ BEGIN
     DELETE FROM TarjetaDebito WHERE IDmetodoPago = p_IDmetodoPago;
     DELETE FROM TarjetaCredito WHERE IDmetodoPago = p_IDmetodoPago;
 
-    -- Eliminar entrada en la tabla MétodoDePago
+    -- Eliminar entrada en la tabla MétodoDePago sin restricciones de clave foránea
     DELETE FROM MetodoDePago WHERE IDmetodoPago = p_IDmetodoPago;
 
     COMMIT;
 END //
 DELIMITER ;
-
 
 
 
@@ -627,15 +660,16 @@ DELIMITER ;
 
 
 
-
-
--- Eliminar Producto
+-- Eliminar Producto 
 DELIMITER //
 CREATE PROCEDURE sp_eliminar_producto(
     IN p_idproducto VARCHAR(255)
 )
 BEGIN
     DECLARE existe_registro INT;
+
+    -- Desactivar temporalmente las restricciones de clave foránea
+    SET foreign_key_checks = 0;
 
     SELECT COUNT(*) INTO existe_registro FROM Producto WHERE idproducto = p_idproducto;
     IF existe_registro = 0 THEN
@@ -645,6 +679,9 @@ BEGIN
         DELETE FROM Producto WHERE idproducto = p_idproducto;
         COMMIT;
     END IF;
+
+    -- Restaurar las restricciones de clave foránea
+    SET foreign_key_checks = 1;
 END //
 DELIMITER ;
 
@@ -751,7 +788,5 @@ BEGIN
     COMMIT;
 END //
 DELIMITER ;
-
-
 
 
