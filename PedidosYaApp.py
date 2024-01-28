@@ -24,10 +24,9 @@ def agregar_calificacion():
     print("Registro agregado exitosamente.")
 
 def consultar_calificacion():
-    idpedido = input("Ingrese el ID del pedido: ")
-    numpedido = input("Ingrese el número del pedido: ")
+    idpedido = input("Ingrese el ID del pedido que desea consultar: ")
 
-    cursor.execute("SELECT * FROM CALIFICACION WHERE idpedido = %s AND numpedido = %s", (idpedido, numpedido))
+    cursor.execute("SELECT * FROM CALIFICACION WHERE idpedido = %s", (idpedido,))
     row = cursor.fetchone()
 
     if row:
@@ -40,11 +39,11 @@ def consultar_calificacion():
     else:
         print("Calificación no encontrada.")
 
+
 def actualizar_calificacion():
     idpedido = input("Ingrese el ID del pedido que desea actualizar: ")
-    numpedido = input("Ingrese el número del pedido que desea actualizar: ")
 
-    cursor.execute("SELECT * FROM CALIFICACION WHERE idpedido = %s AND numpedido = %s", (idpedido, numpedido))
+    cursor.execute("SELECT * FROM CALIFICACION WHERE idpedido = %s", (idpedido,))
     row = cursor.fetchone()
 
     if row:
@@ -55,32 +54,66 @@ def actualizar_calificacion():
         print("Calificación Producto:", row[3])
         print("Número Pedido:", row[4])
 
-        nueva_calificacionEstablecimiento = input("Ingrese la nueva calificación del establecimiento (presione Enter para dejar sin cambios): ")
-        nueva_calificacionRepartidor = input("Ingrese la nueva calificación del repartidor (presione Enter para dejar sin cambios): ")
-        nueva_calificacionProducto = input("Ingrese la nueva calificación del producto (presione Enter para dejar sin cambios): ")
+        print("Seleccione el campo que desea actualizar:")
+        print("1 - Calificación Establecimiento")
+        print("2 - Calificación Repartidor")
+        print("3 - Calificación Producto")
+        print("4 - No realizar cambios")
 
-        if nueva_calificacionEstablecimiento:
-            row[1] = nueva_calificacionEstablecimiento
-        if nueva_calificacionRepartidor:
-            row[2] = nueva_calificacionRepartidor
-        if nueva_calificacionProducto:
-            row[3] = nueva_calificacionProducto
+        opcion = input("Ingrese el número de la opción: ")
 
-        # Utilizar %s como marcador de posición
-        cursor.execute("UPDATE CALIFICACION SET calificacionEstablecimiento = %s, calificacionRepartidor = %s, calificacionProducto = %s WHERE idpedido = %s AND numpedido = %s",
-                       (row[1], row[2], row[3], idpedido, numpedido))
+     
+        if opcion == '1':
+            nueva_calificacionEstablecimiento = input("Ingrese la nueva calificación del establecimiento: ").upper()
+            updated_row = (
+                row[0],  # ID Pedido
+                nueva_calificacionEstablecimiento,  # Nueva Calificación Establecimiento
+                row[2],  # Calificación Repartidor existente
+                row[3],  # Calificación Producto existente
+                row[4]  # Número Pedido existente
+            )
+        elif opcion == '2':
+            nueva_calificacionRepartidor = input("Ingrese la nueva calificación del repartidor: ").upper()
+            updated_row = (
+                row[0],  # ID Pedido
+                row[1],  # Calificación Establecimiento existente
+                nueva_calificacionRepartidor,  # Nueva Calificación Repartidor
+                row[3],  # Calificación Producto existente
+                row[4]  # Número Pedido existente
+            )
+        elif opcion == '3':
+            nueva_calificacionProducto = input("Ingrese la nueva calificación del producto: ").upper()
+            updated_row = (
+                row[0],  # ID Pedido
+                row[1],  # Calificación Establecimiento existente
+                row[2],  # Calificación Repartidor existente
+                nueva_calificacionProducto,  # Nueva Calificación Producto
+                row[4]  # Número Pedido existente
+            )
+        elif opcion == '4':
+            print("No se realizarán cambios. Volviendo al menú principal.")
+            return
+        else:
+            print("Opción no válida. No se realizarán cambios.")
+            return
+
+      
+        cursor.execute("UPDATE CALIFICACION SET calificacionEstablecimiento = %s, calificacionRepartidor = %s, calificacionProducto = %s WHERE idpedido = %s",
+                       (updated_row[1], updated_row[2], updated_row[3], idpedido))
         connection.commit()
         print("Registro actualizado exitosamente.")
     else:
         print("Calificación no encontrada.")
 
-def eliminar_calificacion():
-    idpedido = input("Ingrese el ID del pedido que desea eliminar: ")
-    numpedido = input("Ingrese el número del pedido que desea eliminar: ")
 
-    cursor.execute("DELETE FROM CALIFICACION WHERE idpedido = %s AND numpedido = %s", (idpedido, numpedido))
+
+
+def eliminar_calificacion():
+    idpedido = input("Ingrese el ID del pedido que desea eliminar la calificación: ")
+
+    cursor.execute("DELETE FROM CALIFICACION WHERE idpedido = %s", (idpedido,))
     connection.commit()
-    print("Registro eliminado exitosamente.")
+    print("Registro de calificación eliminado exitosamente.")
 
 
 #################################### CLIENTE #################################
@@ -137,25 +170,48 @@ def actualizar_cliente():
         print("Número Pedido:", row[6])
         print("ID Empleado:", row[7])
 
-        # Variables para almacenar los nuevos valores
-        nueva_email = input("Ingrese el nuevo correo electrónico (presione Enter para dejar sin cambios): ")
-        nueva_fecha_nacimiento = input("Ingrese la nueva fecha de nacimiento (presione Enter para dejar sin cambios): ")
-        nueva_cedula = input("Ingrese la nueva cédula (presione Enter para dejar sin cambios): ")
-        nueva_direccion = input("Ingrese la nueva dirección (presione Enter para dejar sin cambios): ")
-        nueva_edad = input("Ingrese la nueva edad (presione Enter para dejar sin cambios): ")
-        nuevo_numpedido = input("Ingrese el nuevo número del pedido (presione Enter para dejar sin cambios): ")
-        nuevo_id_empleado = input("Ingrese el nuevo ID del empleado (presione Enter para dejar sin cambios): ")
+        print("Seleccione el campo que desea actualizar:")
+        print("1 - Email")
+        print("2 - Fecha de Nacimiento")
+        print("3 - Cédula")
+        print("4 - Dirección")
+        print("5 - Edad")
+        print("6 - Número del Pedido")
+        print("7 - ID del Empleado")
+        print("8 - No realizar cambios")
 
-        # Asignar los nuevos valores a las variables
+        opcion = input("Ingrese el número de la opción: ")
+
+        if opcion == '1':
+            nueva_email = input("Ingrese el nuevo correo electrónico: ")
+        elif opcion == '2':
+            nueva_fecha_nacimiento = input("Ingrese la nueva fecha de nacimiento: ")
+        elif opcion == '3':
+            nueva_cedula = input("Ingrese la nueva cédula: ")
+        elif opcion == '4':
+            nueva_direccion = input("Ingrese la nueva dirección: ")
+        elif opcion == '5':
+            nueva_edad = input("Ingrese la nueva edad: ")
+        elif opcion == '6':
+            nuevo_numpedido = input("Ingrese el nuevo número del pedido: ")
+        elif opcion == '7':
+            nuevo_id_empleado = input("Ingrese el nuevo ID del empleado: ")
+        elif opcion == '8':
+            print("No se realizarán cambios. Volviendo al menú principal.")
+            return
+        else:
+            print("Opción no válida. No se realizarán cambios.")
+            return
+
         row = (
             row[0],  # Teléfono
-            nueva_email if nueva_email else row[1],  # Email
-            nueva_fecha_nacimiento if nueva_fecha_nacimiento else row[2],  # Fecha de Nacimiento
-            nueva_cedula if nueva_cedula else row[3],  # Cédula
-            nueva_direccion if nueva_direccion else row[4],  # Dirección
-            nueva_edad if nueva_edad else row[5],  # Edad
-            nuevo_numpedido if nuevo_numpedido else row[6],  # Número Pedido
-            nuevo_id_empleado if nuevo_id_empleado else row[7]  # ID Empleado
+            nueva_email if opcion == '1' else row[1],  # Email
+            nueva_fecha_nacimiento if opcion == '2' else row[2],  # Fecha de Nacimiento
+            nueva_cedula if opcion == '3' else row[3],  # Cédula
+            nueva_direccion if opcion == '4' else row[4],  # Dirección
+            nueva_edad if opcion == '5' else row[5],  # Edad
+            nuevo_numpedido if opcion == '6' else row[6],  # Número Pedido
+            nuevo_id_empleado if opcion == '7' else row[7]  # ID Empleado
         )
 
         cursor.execute("UPDATE Cliente SET email = %s, fecha_nacimiento = %s, cedula = %s, direccion = %s, edad = %s, numpedido = %s, id_empleado = %s WHERE Telefono = %s",
@@ -165,13 +221,13 @@ def actualizar_cliente():
     else:
         print("Cliente no encontrado.")
 
+
 def eliminar_cliente():
     telefono = input("Ingrese el número de teléfono que desea eliminar: ")
 
     cursor.execute("DELETE FROM Cliente WHERE Telefono = %s", (telefono,))
     connection.commit()
     print("Registro eliminado exitosamente.")
-
 
 
 ############################### ESTABLECIMIENTO ###############################
@@ -192,10 +248,8 @@ def agregar_establecimiento():
 
 def actualizar_establecimiento():
     idEstablecimiento = input("Ingrese el ID del establecimiento que desea actualizar: ")
-    numpedido = input("Ingrese el número del pedido que desea actualizar: ")
 
-    cursor.execute("SELECT * FROM Establecimiento WHERE idEstablecimiento = %s AND numpedido = %s",
-                   (idEstablecimiento, numpedido))
+    cursor.execute("SELECT * FROM Establecimiento WHERE idEstablecimiento = %s", (idEstablecimiento,))
     row = cursor.fetchone()
 
     if row:
@@ -208,45 +262,64 @@ def actualizar_establecimiento():
         print("Teléfono:", row[5])
         print("Tipo de Establecimiento:", row[6])
 
-        nueva_ubicacion = input("Ingrese la nueva ubicación (presione Enter para dejar sin cambios): ")
-        nueva_calificacion = input("Ingrese la nueva calificación (presione Enter para dejar sin cambios): ")
-        nueva_distancia = input("Ingrese la nueva distancia (presione Enter para dejar sin cambios): ")
+        print("Seleccione el campo que desea actualizar:")
+        print("1 - Ubicación")
+        print("2 - Calificación")
+        print("3 - Distancia")
+        print("4 - Teléfono")
+        print("5 - Tipo de Establecimiento")
+        print("6 - No realizar cambios")
 
-        while True:
-            try:
-                nuevo_telefono_input = input("Ingrese el nuevo número de teléfono (presione Enter para dejar sin cambios): ")
-                nuevo_telefono = int(nuevo_telefono_input) if nuevo_telefono_input.strip() else None
-                break
-            except ValueError:
-                print("Por favor, ingrese un valor entero para el número de teléfono.")
+        opcion = input("Ingrese el número de la opción: ")
 
-        nuevo_tipoEstablecimiento = input("Ingrese el nuevo tipo de establecimiento (presione Enter para dejar sin cambios): ")
+        if opcion == '1':
+            nueva_ubicacion = input("Ingrese la nueva ubicación: ")
+        elif opcion == '2':
+            nueva_calificacion = input("Ingrese la nueva calificación: ")
+        elif opcion == '3':
+            nueva_distancia = input("Ingrese la nueva distancia: ")
+        elif opcion == '4':
+            while True:
+                try:
+                    nuevo_telefono_input = input("Ingrese el nuevo número de teléfono: ")
+                    nuevo_telefono = int(nuevo_telefono_input)
+                    break
+                except ValueError:
+                    print("Por favor, ingrese un valor entero para el número de teléfono.")
+        elif opcion == '5':
+            nuevo_tipoEstablecimiento = input("Ingrese el nuevo tipo de establecimiento: ")
+        elif opcion == '6':
+            print("No se realizarán cambios. Volviendo al menú principal.")
+            return
+        else:
+            print("Opción no válida. No se realizarán cambios.")
+            return
 
-        
+   
         updated_row = (
             row[0],  # ID Establecimiento
             row[1],  # Número Pedido
-            nueva_ubicacion if nueva_ubicacion else row[2],  # Nueva Ubicación o valor existente
-            nueva_calificacion if nueva_calificacion else row[3],  # Nueva Calificación o valor existente
-            nueva_distancia if nueva_distancia else row[4],  # Nueva Distancia o valor existente
-            nuevo_telefono if nuevo_telefono is not None else row[5],  # Nuevo Teléfono o valor existente
-            nuevo_tipoEstablecimiento if nuevo_tipoEstablecimiento else row[6],  # Nuevo Tipo de Establecimiento o valor existente
+            nueva_ubicacion if opcion == '1' else row[2],  # Nueva Ubicación o valor existente
+            nueva_calificacion if opcion == '2' else row[3],  # Nueva Calificación o valor existente
+            nueva_distancia if opcion == '3' else row[4],  # Nueva Distancia o valor existente
+            nuevo_telefono if opcion == '4' else row[5],  # Nuevo Teléfono o valor existente
+            nuevo_tipoEstablecimiento if opcion == '5' else row[6],  # Nuevo Tipo de Establecimiento o valor existente
         )
 
-       
-        update_query = "UPDATE Establecimiento SET ubicacion = %s, calificacion = %s, distancia = %s, telefono = %s, tipoEstablecimiento = %s WHERE idEstablecimiento = %s AND numpedido = %s"
-        cursor.execute(update_query, (updated_row[2], updated_row[3], updated_row[4], updated_row[5], updated_row[6], idEstablecimiento, numpedido))
+ 
+        update_query = "UPDATE Establecimiento SET ubicacion = %s, calificacion = %s, distancia = %s, telefono = %s, tipoEstablecimiento = %s WHERE idEstablecimiento = %s"
+        cursor.execute(update_query, (updated_row[2], updated_row[3], updated_row[4], updated_row[5], updated_row[6], idEstablecimiento))
         connection.commit()
         print("Registro actualizado exitosamente.")
     else:
         print("Establecimiento no encontrado.")
 
-def consultar_establecimiento():
-    idEstablecimiento = input("Ingrese el ID del establecimiento: ")
-    numpedido = input("Ingrese el número del pedido: ")
 
-    cursor.execute("SELECT * FROM Establecimiento WHERE idEstablecimiento = %s AND numpedido = %s",
-                   (idEstablecimiento, numpedido))
+
+def consultar_establecimiento():
+    idEstablecimiento = input("Ingrese el ID del establecimiento que desea consultar: ")
+
+    cursor.execute("SELECT * FROM Establecimiento WHERE idEstablecimiento = %s", (idEstablecimiento,))
     row = cursor.fetchone()
 
     if row:
@@ -263,68 +336,25 @@ def consultar_establecimiento():
 
 
 
-def actualizar_establecimiento():
-    idEstablecimiento = input("Ingrese el ID del establecimiento que desea actualizar: ")
-    numpedido = input("Ingrese el número del pedido que desea actualizar: ")
 
-    cursor.execute("SELECT * FROM Establecimiento WHERE idEstablecimiento = %s AND numpedido = %s",
-                   (idEstablecimiento, numpedido))
-    row = cursor.fetchone()
 
-    if row:
-        print("Establecimiento actual:")
-        print("ID Establecimiento:", row[0])
-        print("Número Pedido:", row[1])
-        print("Ubicación:", row[2])
-        print("Calificación:", row[3])
-        print("Distancia:", row[4])
-        print("Teléfono:", row[5])
-        print("Tipo de Establecimiento:", row[6])
-
-        nueva_ubicacion = input("Ingrese la nueva ubicación (presione Enter para dejar sin cambios): ")
-        nueva_calificacion = input("Ingrese la nueva calificación (presione Enter para dejar sin cambios): ")
-        nueva_distancia = input("Ingrese la nueva distancia (presione Enter para dejar sin cambios): ")
-        nuevo_telefono = input("Ingrese el nuevo número de teléfono (presione Enter para dejar sin cambios): ")
-        nuevo_tipoEstablecimiento = input("Ingrese el nuevo tipo de establecimiento (presione Enter para dejar sin cambios): ")
-
-        if nueva_ubicacion:
-            row[2] = nueva_ubicacion
-        if nueva_calificacion:
-            row[3] = nueva_calificacion
-        if nueva_distancia:
-            row[4] = nueva_distancia
-        if nuevo_telefono:
-            row[5] = nuevo_telefono
-        if nuevo_tipoEstablecimiento:
-            row[6] = nuevo_tipoEstablecimiento
-
-        cursor.execute("UPDATE Establecimiento SET ubicacion = %s, calificacion = %s, distancia = %s, telefono = %s, tipoEstablecimiento = %s WHERE idEstablecimiento = %s AND numpedido = %s",
-                       (row[2], row[3], row[4], row[5], row[6], idEstablecimiento, numpedido))
-        connection.commit()
-        print("Registro actualizado exitosamente.")
-    else:
-        print("Establecimiento no encontrado.")
 
 def eliminar_establecimiento():
     idEstablecimiento = input("Ingrese el ID del establecimiento que desea eliminar: ")
-    numpedido = input("Ingrese el número del pedido que desea eliminar: ")
 
     try:
-        
-        cursor.execute("DELETE FROM pedido WHERE idEstablecimiento = %s AND numpedido = %s",
-                       (idEstablecimiento, numpedido))
+       
+        cursor.execute("DELETE FROM pedido WHERE idEstablecimiento = %s", (idEstablecimiento,))
 
         
-        cursor.execute("DELETE FROM Establecimiento WHERE idEstablecimiento = %s AND numpedido = %s",
-                       (idEstablecimiento, numpedido))
+        cursor.execute("DELETE FROM Establecimiento WHERE idEstablecimiento = %s", (idEstablecimiento,))
 
         connection.commit()
         print("Registro eliminado exitosamente.")
     except mysql.connector.Error as err:
-        # Manejo de errores
+        
         print(f"Error: {err}")
         connection.rollback()
-
 
 ################################## METODO DE PAGO ###############################
 def agregar_metodo_pago():
@@ -332,7 +362,7 @@ def agregar_metodo_pago():
     idcliente = input("Ingrese el ID del cliente: ")
     NumPedido = input("Ingrese el número del pedido: ")
 
-    # Utilizar un marcador de posición para cada valor y proporcionarlos como una tupla
+ 
     cursor.execute("INSERT INTO MetodoDePago (IDmetodoPago, idcliente, NumPedido) VALUES (%s, %s, %s)",
                    (IDmetodoPago, idcliente, NumPedido))
 
@@ -369,7 +399,6 @@ def consultar_metodo_pago():
         print("ID Cliente:", row[1])
         print("Número del Pedido:", row[2])
 
-        # Consultar tarjeta vinculada (si existe)
         cursor.execute("SELECT * FROM TarjetaDebito WHERE IDmetodoPago = %s", (IDmetodoPago,))
         tarjeta_debito = cursor.fetchone()
 
@@ -471,7 +500,6 @@ def eliminar_metodo_pago():
     row = cursor.fetchone()
 
     if row:
-        # Eliminar tarjeta vinculada (si existe)
         cursor.execute("DELETE FROM TarjetaDebito WHERE IDmetodoPago = %s", (IDmetodoPago,))
         cursor.execute("DELETE FROM TarjetaCredito WHERE IDmetodoPago = %s", (IDmetodoPago,))
 
@@ -528,6 +556,8 @@ def actualizar_producto():
     row = cursor.fetchone()
 
     if row:
+        row = list(row)
+
         print("Producto actual:")
         print("ID Producto:", row[0])
         print("Nombre:", row[1])
@@ -537,63 +567,64 @@ def actualizar_producto():
         print("Descuento:", row[5] if row[5] else "No hay descuento")
         print("ID Establecimiento:", row[6])
 
-        nuevo_nombre = input("Ingrese el nuevo nombre del producto (presione Enter para dejar sin cambios): ")
-        nueva_foto = input("Ingrese la nueva ruta de la foto del producto (presione Enter para dejar sin cambios): ")
-        nuevo_precio = input("Ingrese el nuevo precio del producto (presione Enter para dejar sin cambios): ")
-        nueva_descripcion = input("Ingrese la nueva descripción del producto (presione Enter para dejar sin cambios): ")
-        nuevo_descuento = input("Ingrese el nuevo descuento del producto (presione Enter para dejar sin cambios): ")
-        nuevo_idEstablecimiento = input("Ingrese el nuevo ID del establecimiento (presione Enter para dejar sin cambios): ")
+        print("\nSeleccione el campo que desea actualizar:")
+        print("1 - Nombre")
+        print("2 - Foto")
+        print("3 - Precio")
+        print("4 - Descripción")
+        print("5 - Descuento")
+        print("6 - ID Establecimiento")
+        print("7 - No realizar cambios")
 
-       
-        nuevo_foto_blob = None
-        if nueva_foto:
-            with open(nueva_foto, "rb") as file:
-                nuevo_foto_blob = file.read()
+        opcion = input("Ingrese el número de la opción: ")
 
-        if nuevo_nombre:
-            row[1] = nuevo_nombre
-        if nuevo_foto_blob:
-            row[2] = nuevo_foto_blob
-        if nuevo_precio:
-            row[3] = nuevo_precio
-        if nueva_descripcion:
-            row[4] = nueva_descripcion
-        if nuevo_descuento:
-            row[5] = nuevo_descuento
-        if nuevo_idEstablecimiento:
-            row[6] = nuevo_idEstablecimiento
 
-        cursor.execute("UPDATE Producto SET nombre = %s, foto = %s, precio = %s, descripcion = %s, descuento = %s, idEstablecimiento = %s WHERE idproducto = %s",
-                       (row[1], row[2], row[3], row[4], row[5], row[6], idproducto))
-        connection.commit()
-        print("Registro actualizado exitosamente.")
+        if opcion == "1":
+            nuevo_valor = input("Ingrese el nuevo nombre del producto: ")
+            row[1] = nuevo_valor if nuevo_valor else row[1]
+        elif opcion == "2":
+            nueva_foto = input("Ingrese la nueva ruta de la foto del producto: ")
+            nuevo_foto_blob = None
+            if nueva_foto:
+                with open(nueva_foto, "rb") as file:
+                    nuevo_foto_blob = file.read()
+            row[2] = nuevo_foto_blob if nuevo_foto_blob else row[2]
+        elif opcion == "3":
+            nuevo_valor = input("Ingrese el nuevo precio del producto: ")
+            row[3] = nuevo_valor if nuevo_valor else row[3]
+        elif opcion == "4":
+            nuevo_valor = input("Ingrese la nueva descripción del producto: ")
+            row[4] = nuevo_valor if nuevo_valor else row[4]
+        elif opcion == "5":
+            nuevo_valor = input("Ingrese el nuevo descuento del producto: ")
+            row[5] = nuevo_valor if nuevo_valor else row[5]
+        elif opcion == "6":
+            nuevo_valor = input("Ingrese el nuevo ID del establecimiento: ")
+            row[6] = nuevo_valor if nuevo_valor else row[6]
+
+        if opcion != "7":
+
+            row = tuple(row)
+
+            cursor.execute("UPDATE Producto SET nombre = %s, foto = %s, precio = %s, descripcion = %s, descuento = %s, idEstablecimiento = %s WHERE idproducto = %s",
+                           (row[1], row[2], row[3], row[4], row[5], row[6], idproducto))
+            connection.commit()
+            print("Registro actualizado exitosamente.")
+        else:
+            print("No se realizaron cambios.")
     else:
         print("Producto no encontrado.")
+
+
 
 def eliminar_producto():
     idproducto = input("Ingrese el ID del producto que desea eliminar: ")
 
-    
     cursor.execute("UPDATE Producto SET disponible = FALSE WHERE idproducto = %s", (idproducto,))
     connection.commit()
     print("Producto marcado como no disponible exitosamente.")
-
-
+    
 ############################ REPARTIDOR ##################################
-def agregar_repartidor():
-    cedula = input("Ingrese la cédula del repartidor: ")
-    nombre = input("Ingrese el nombre del repartidor: ")
-    telefono = input("Ingrese el número de teléfono del repartidor (presione Enter si no hay número de teléfono): ")
-    calificacion = input("Ingrese la calificación del repartidor (presione Enter si no hay calificación): ")
-    fechanacimiento = input("Ingrese la fecha de nacimiento del repartidor (YYYY-MM-DD): ")
-    email = input("Ingrese el correo electrónico del repartidor (presione Enter si no hay correo electrónico): ")
-    numpedido = input("Ingrese el número del pedido asignado al repartidor (presione Enter si no hay pedido asignado): ")
-
-    cursor.execute("INSERT INTO Repartidor (cedula, nombre, telefono, calificacion, fechanacimiento, email, numpedido) VALUES (%s, %s, %s, %s, %s, %s, %s)",
-                   (cedula, nombre, telefono, calificacion, fechanacimiento, email, numpedido))
-    connection.commit()
-    print("Registro de repartidor agregado exitosamente.")
-
 def agregar_repartidor():
     cedula = input("Ingrese la cédula del repartidor: ")
     nombre = input("Ingrese el nombre del repartidor: ")
@@ -634,6 +665,9 @@ def actualizar_repartidor():
     row = cursor.fetchone()
 
     if row:
+
+        row = list(row)
+
         print("Repartidor actual:")
         print("Cédula:", row[0])
         print("Nombre:", row[1])
@@ -643,32 +677,51 @@ def actualizar_repartidor():
         print("Email:", row[5] if row[5] else "No hay correo electrónico")
         print("Número de Pedido Asignado:", row[6] if row[6] else "No hay pedido asignado")
 
-        nuevo_nombre = input("Ingrese el nuevo nombre del repartidor (presione Enter para dejar sin cambios): ")
-        nuevo_telefono = input("Ingrese el nuevo número de teléfono (presione Enter para dejar sin cambios): ")
-        nueva_calificacion = input("Ingrese la nueva calificación (presione Enter para dejar sin cambios): ")
-        nueva_fechanacimiento = input("Ingrese la nueva fecha de nacimiento (presione Enter para dejar sin cambios): ")
-        nuevo_email = input("Ingrese el nuevo correo electrónico (presione Enter para dejar sin cambios): ")
-        nuevo_numpedido = input("Ingrese el nuevo número de pedido asignado (presione Enter para dejar sin cambios): ")
 
-        if nuevo_nombre:
-            row[1] = nuevo_nombre
-        if nuevo_telefono:
-            row[2] = nuevo_telefono
-        if nueva_calificacion:
-            row[3] = nueva_calificacion
-        if nueva_fechanacimiento:
-            row[4] = nueva_fechanacimiento
-        if nuevo_email:
-            row[5] = nuevo_email
-        if nuevo_numpedido:
-            row[6] = nuevo_numpedido
+        print("\nSeleccione el campo que desea actualizar:")
+        print("1 - Nombre")
+        print("2 - Teléfono")
+        print("3 - Calificación")
+        print("4 - Fecha de Nacimiento")
+        print("5 - Email")
+        print("6 - Número de Pedido Asignado")
+        print("7 - No realizar cambios")
 
-        cursor.execute("UPDATE Repartidor SET nombre = %s, telefono = %s, calificacion = %s, fechanacimiento = %s, email = %s, numpedido = %s WHERE cedula = %s",
-                       (row[1], row[2], row[3], row[4], row[5], row[6], cedula))
-        connection.commit()
-        print("Registro de repartidor actualizado exitosamente.")
+        opcion = input("Ingrese el número de la opción: ")
+
+        if opcion == "1":
+            nuevo_valor = input("Ingrese el nuevo nombre del repartidor: ")
+            row[1] = nuevo_valor if nuevo_valor else row[1]
+        elif opcion == "2":
+            nuevo_valor = input("Ingrese el nuevo número de teléfono: ")
+            row[2] = nuevo_valor if nuevo_valor else row[2]
+        elif opcion == "3":
+            nuevo_valor = input("Ingrese la nueva calificación: ")
+            row[3] = nuevo_valor if nuevo_valor else row[3]
+        elif opcion == "4":
+            nuevo_valor = input("Ingrese la nueva fecha de nacimiento: ")
+            row[4] = nuevo_valor if nuevo_valor else row[4]
+        elif opcion == "5":
+            nuevo_valor = input("Ingrese el nuevo correo electrónico: ")
+            row[5] = nuevo_valor if nuevo_valor else row[5]
+        elif opcion == "6":
+            nuevo_valor = input("Ingrese el nuevo número de pedido asignado: ")
+            row[6] = nuevo_valor if nuevo_valor else row[6]
+
+        if opcion != "7":
+        
+            row = tuple(row)
+
+         
+            cursor.execute("UPDATE Repartidor SET nombre = %s, telefono = %s, calificacion = %s, fechanacimiento = %s, email = %s, numpedido = %s WHERE cedula = %s",
+                           (row[1], row[2], row[3], row[4], row[5], row[6], cedula))
+            connection.commit()
+            print("Registro de repartidor actualizado exitosamente.")
+        else:
+            print("No se realizaron cambios.")
     else:
         print("Repartidor no encontrado.")
+
 
 def eliminar_repartidor():
     cedula = input("Ingrese la cédula del repartidor que desea eliminar: ")
@@ -676,6 +729,7 @@ def eliminar_repartidor():
     cursor.execute("DELETE FROM Repartidor WHERE cedula = %s", (cedula,))
     connection.commit()
     print("Registro de repartidor eliminado exitosamente.")
+  
 
 # Menú interactivo
 while True:
