@@ -36,7 +36,7 @@ CREATE TABLE Cliente(
     email VARCHAR(50) NOT NULL,
     fecha_nacimiento DATE NOT NULL,
     cedula BIGINT NOT NULL,
-    direccion VARCHAR(50) NOT NULL,
+    direccion VARCHAR(250) NOT NULL,
     edad INT,
     numpedido VARCHAR(50) NOT NULL,
     id_empleado VARCHAR(50),
@@ -51,7 +51,7 @@ CREATE TABLE Producto(
     nombre VARCHAR(30) NOT NULL, 
     foto BLOB,
     precio FLOAT NOT NULL,
-    descripcion VARCHAR(30) NOT NULL,
+    descripcion VARCHAR(250) NOT NULL,
     descuento FLOAT NULL,
     idEstablecimiento VARCHAR(50),
     FOREIGN KEY (idEstablecimiento) REFERENCES Establecimiento(idEstablecimiento)
@@ -61,7 +61,7 @@ CREATE TABLE PerfilCliente(
     idCliente VARCHAR(50) PRIMARY KEY NOT NULL,
     HistorialPedido VARCHAR(20),
     favoritos VARCHAR(250),
-    direcciones VARCHAR(50),
+    direcciones VARCHAR(250),
     cupones VARCHAR(250),
     MetodoDePago VARCHAR(250),
     Telefono INT NOT NULL,
@@ -71,8 +71,8 @@ CREATE TABLE PerfilCliente(
 
 CREATE TABLE Cancelacion(
     numpedido VARCHAR(50) PRIMARY KEY NOT NULL,
-    motivo VARCHAR(30),
-    estadoDelPedido VARCHAR(30),
+    motivo VARCHAR(250),
+    estadoDelPedido VARCHAR(250),
     costoCancelacion FLOAT NOT NULL
 );
 
@@ -82,7 +82,7 @@ CREATE TABLE Repartidor(
     cedula BIGINT NOT NULL,
     nombre VARCHAR(50) NOT NULL,
     telefono INT,
-    calificacion VARCHAR(50) NULL,
+    calificacion VARCHAR(250) NULL,
     fechanacimiento DATE NOT NULL,
     email VARCHAR(50),
     numpedido VARCHAR(50) NOT NULL,
@@ -120,7 +120,7 @@ CREATE TABLE Bicicleta(
 CREATE TABLE Pedido(
 	numpedido VARCHAR(50) NOT NULL,
 	estado VARCHAR(30) NOT NULL,
-	ubicacion VARCHAR(50) NOT NULL,
+	ubicacion VARCHAR(250) NOT NULL,
 	precio FLOAT(10) NOT NULL,
 	telefono INT ,
 	cedula BIGINT NOT NULL,
@@ -137,7 +137,7 @@ CREATE TABLE Pedido(
 CREATE TABLE MetodoDePago(
     IDmetodoPago VARCHAR(50) PRIMARY KEY NOT NULL,
     idcliente VARCHAR(50) NOT NULL,
-    NumPedido VARCHAR(50) NOT NULL,
+    NumPedido VARCHAR(50) ,
     FOREIGN KEY (idcliente) REFERENCES PerfilCliente(idCliente),
     FOREIGN KEY(NumPedido) REFERENCES Pedido(numpedido)
 );
@@ -157,3 +157,4 @@ CREATE TABLE TarjetaCredito(
     FechaExpi DATE NOT NULL,
     FOREIGN KEY (IDmetodoPago) REFERENCES MetodoDePago(IDmetodoPago)
 );
+
