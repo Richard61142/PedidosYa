@@ -6,10 +6,17 @@ CREATE USER 'usuario4'@'localhost' IDENTIFIED BY '13579';
 CREATE USER 'usuario5'@'localhost' IDENTIFIED BY '11235';
 -- ===========================OTORGAR PERMISOS ============================
 GRANT SELECT, INSERT, UPDATE, DELETE ON pedidosya.* TO 'usuario1'@'localhost';
-GRANT SELECT, INSERT ON pedidosya.* TO 'usuario2'@'localhost';
+GRANT SELECT, INSERT, DELETE ON pedidosya.* TO 'usuario2'@'localhost';
 GRANT SELECT ON pedidosya.* TO 'usuario3'@'localhost';
 GRANT INSERT, UPDATE ON pedidosya.* TO 'usuario4'@'localhost';
-GRANT DELETE ON pedidosya.* TO 'usuario5'@'localhost';
+GRANT SELECT ON pedidosya.* TO 'usuario5'@'localhost';
+
+-- ===========================PERMISOS A VISTAS============================
+GRANT SELECT ON pedidosya.HistorialCompras TO 'usuario3'@'localhost';
+GRANT SELECT ON pedidosya.PedidosCancelados TO 'usuario3'@'localhost';
+
+-- ===========================PERMISOS A VISTAS============================
+
 
 -- ===========================TRIGGER============================
 -- TRIGGER PARA INSERTAR EN PEDIDO --
