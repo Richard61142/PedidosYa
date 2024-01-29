@@ -16,12 +16,17 @@ GRANT SELECT ON pedidosya.* TO 'usuario5'@'localhost';
 GRANT SELECT ON pedidosya.HistorialCompras TO 'usuario3'@'localhost';
 GRANT SELECT ON pedidosya.PedidosCancelados TO 'usuario3'@'localhost';
 
--- ===========================PERMISO A STORED PROCEDURE============================
+-- ============================PERMISO A STORED PROCEDURE============================
 GRANT EXECUTE ON PROCEDURE pedidosya.sp_agregar_cliente TO 'usuario5'@'localhost';
 GRANT EXECUTE ON PROCEDURE pedidosya.sp_consultar_cliente TO 'usuario5'@'localhost';
 
--- ===========================PERMISO A STORED PROCEDURE============================
-CREATE INDEX idx_pedidos_fecha ON Pedido(fecha_pedido);
+-- =====================================INDICES======================================
+CREATE INDEX idx_pedidos_fecha ON Pedido(fecha_pedido);Este índice acelera las consultas que buscan pedidos por fecha, optimiza las operaciones de ordenamiento y agrupación por fecha, y facilita la verificación de fechas duplicadas.
+CREATE INDEX idx_pedido_numero ON Pedido(numeroPedido);Este índice puede acelerar las consultas que buscan información específica de un pedido, ya que numeroPedido es una clave primaria.
+CREATE INDEX idx_cliente_telefono ON Cliente(Telefono);Dado que el teléfono se utiliza para unir las tablas Cliente y Pedido, un índice aquí mejorará la eficiencia de estas operaciones JOIN.
+CREATE INDEX idx_producto_id ON Producto(idproducto);Este índice facilitará las consultas rápidas para obtener detalles específicos del producto.
+CREATE INDEX idx_repartidor_cedula ON Repartidor(cedula);Este índice acelerará las consultas relacionadas con los repartidores, especialmente útil si se realizan búsquedas frecuentes o filtrados basados en la cédula del repartidor.
+CREATE INDEX idx_establecimiento_id ON Establecimiento(idEstablecimiento);Este índice puede ser útil para recuperar rápidamente información sobre un establecimiento específico.
 
 -- ===========================TRIGGER============================
 -- TRIGGER PARA INSERTAR EN PEDIDO --
