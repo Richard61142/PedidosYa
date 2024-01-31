@@ -106,9 +106,9 @@ SELECT * FROM PedidosCancelados;
 DELIMITER //
 CREATE PROCEDURE Agregar_calificacion(
     IN p_idpedido INT,
-    IN p_calificacionEstablecimiento INT,
-    IN p_calificacionRepartidor INT,
-    IN p_calificacionProducto INT,
+    IN p_calificacionEstablecimiento VARCHAR(255),
+    IN p_calificacionRepartidor VARCHAR(255),
+    IN p_calificacionProducto VARCHAR(255),
     IN p_numpedido INT
 )
 BEGIN
@@ -126,6 +126,8 @@ BEGIN
     END IF;
 END //
 DELIMITER ;
+
+
 -- Consultar calificacion
 DELIMITER //
 CREATE PROCEDURE Consultar_calificacion(
