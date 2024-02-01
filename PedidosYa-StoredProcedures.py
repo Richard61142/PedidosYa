@@ -4,8 +4,8 @@ import mysql.connector
 connection = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="------------", #COLOCAR CONTRASEÑA DE LA BASE DE DATOS...
-    database="pedidosya"
+    password="Rdnt611422001", #COLOCAR CONTRASEÑA DE LA BASE DE DATOS...
+    database="PEDIDOSYA"
 )
 cursor = connection.cursor()
 print("Se ha conectado a la bases de datos con éxito!!")

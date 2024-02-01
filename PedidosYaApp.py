@@ -4,13 +4,13 @@ import mysql.connector
 connection = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="---------", #COLOCAR CONTRASEÑA DE LA BASE DA DATOS....
-    database="pedidosya"
+    password="Rdnt611422001", #COLOCAR CONTRASEÑA DE LA BASE DA DATOS....
+    database="PEDIDOSYA"
 )
 cursor = connection.cursor()
 print("Se ha conectado a la bases de datos con éxito!!")
 
-############################ CALIFICACION ##################################
+############################ CALIF ICACION ##################################
 def agregar_calificacion():
     idpedido = input("Ingrese el ID del pedido: ")
     calificacionEstablecimiento = input("Ingrese la calificación del establecimiento: ")
@@ -618,12 +618,24 @@ def actualizar_producto():
 
 
 def eliminar_producto():
+    # Solicitar al usuario que ingrese el ID del producto a eliminar
     idproducto = input("Ingrese el ID del producto que desea eliminar: ")
 
-    cursor.execute("UPDATE Producto SET disponible = FALSE WHERE idproducto = %s", (idproducto,))
-    connection.commit()
-    print("Producto marcado como no disponible exitosamente.")
-    
+    try:
+        
+        cursor.execute("DELETE FROM Producto WHERE idproducto = %s", (idproducto,))
+        connection.commit()
+        print(f"Producto con idproducto {idproducto} eliminado exitosamente.")
+    except Exception as e:
+  
+        print(f"Error al eliminar el producto: {e}")
+
+
+
+
+
+
+
 ############################ REPARTIDOR ##################################
 def agregar_repartidor():
     cedula = input("Ingrese la cédula del repartidor: ")

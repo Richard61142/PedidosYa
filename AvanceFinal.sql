@@ -21,7 +21,6 @@ GRANT EXECUTE ON PROCEDURE pedidosya.sp_agregar_cliente TO 'usuario5'@'localhost
 GRANT EXECUTE ON PROCEDURE pedidosya.sp_consultar_cliente TO 'usuario5'@'localhost';
 
 -- =====================================INDICES======================================
-CREATE INDEX idx_pedidos_fecha ON Pedido(fecha_pedido);Este índice acelera las consultas que buscan pedidos por fecha, optimiza las operaciones de ordenamiento y agrupación por fecha, y facilita la verificación de fechas duplicadas.
 CREATE INDEX idx_pedido_numero ON Pedido(numeroPedido);Este índice puede acelerar las consultas que buscan información específica de un pedido, ya que numeroPedido es una clave primaria.
 CREATE INDEX idx_cliente_telefono ON Cliente(Telefono);Dado que el teléfono se utiliza para unir las tablas Cliente y Pedido, un índice aquí mejorará la eficiencia de estas operaciones JOIN.
 CREATE INDEX idx_producto_id ON Producto(idproducto);Este índice facilitará las consultas rápidas para obtener detalles específicos del producto.
